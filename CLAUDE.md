@@ -130,15 +130,15 @@ python scripts/quality_score.py Quarto/file.qmd
 | Lecture | Beamer | Quarto | Key Content |
 |---------|--------|--------|-------------|
 | 1: Intro & Probability Review | `Lecture01_Intro.tex` | -- | Course overview, probability review, statistical inference |
-| 2: Simple Regression | `Lecture02_SimpleRegression.tex` | -- | OLS derivation, properties, interpretation |
-| 3: Multiple Regression: Estimation | `Lecture03_MultipleRegression.tex` | -- | Matrix notation, OLS in matrix form, R-squared |
-| 4: Multiple Regression: Inference | `Lecture04_Inference.tex` | -- | t-tests, F-tests, confidence intervals |
-| 5: Asymptotics for OLS | `Lecture05_Asymptotics.tex` | -- | Consistency, asymptotic normality, LLN/CLT |
-| 6: Heteroskedasticity | `Lecture06_Heteroskedasticity.tex` | -- | Consequences, detection, robust SE, WLS/GLS |
-| 7: Specification & Functional Form | `Lecture07_Specification.tex` | -- | Omitted variables, measurement error, functional form |
-| 8: Instrumental Variables | `Lecture08_IV.tex` | -- | Endogeneity, 2SLS, IV assumptions, weak instruments |
-| 9: Simultaneous Equations | `Lecture09_SimultaneousEq.tex` | -- | Supply-demand, identification, estimation |
-| 10: Panel Data | `Lecture10_PanelData.tex` | -- | FE, RE, first differencing, Hausman test |
-| 11: Binary Response Models | `Lecture11_BinaryResponse.tex` | -- | Probit, logit, marginal effects |
-| 12: Time Series Basics | `Lecture12_TimeSeries.tex` | -- | Stationarity, AR/MA, spurious regression |
-| 13: Advanced Topics / Review | `Lecture13_Advanced.tex` | -- | Selected topics, course synthesis |
+| 2: Simple Regression | `Lecture02_SimpleRegression.tex` | -- | OLS derivation, assumptions (SLR.1-6), Gauss-Markov, R-squared |
+| 3: Multiple Regression: Estimation | *planned* | -- | Matrix notation, OLS in matrix form, FWL, adjusted R-squared |
+| 4: Multiple Regression: Inference | *planned* | -- | t-tests, F-tests, confidence intervals |
+| 5: Asymptotics for OLS | *planned* | -- | Consistency, asymptotic normality, LLN/CLT |
+| 6: Heteroskedasticity | *planned* | -- | Consequences, detection, robust SE, WLS/GLS |
+| 7: Specification & Functional Form | *planned* | -- | Omitted variables, measurement error, functional form |
+| 8: Instrumental Variables | *planned* | -- | Endogeneity, 2SLS, IV assumptions, weak instruments |
+| 9: Simultaneous Equations | *planned* | -- | Supply-demand, identification, estimation |
+| 10: Panel Data | *planned* | -- | FE, RE, first differencing, Hausman test |
+| 11: Binary Response Models | *planned* | -- | Probit, logit, marginal effects |
+| 12: Time Series Basics | *planned* | -- | Stationarity, AR/MA, spurious regression |
+| 13: Advanced Topics / Review | *planned* | -- | Selected topics, course synthesis |

@@ -1,0 +1,920 @@
+% ==============================================================================
+% Lecture 2 — Simple Regression
+% Introduction to Econometrics
+% CREST, Institut Polytechnique de Paris
+% ==============================================================================
+
+\documentclass[aspectratio=169,12pt]{beamer}
+\input{header}
+
+% --- Metadata ---
+\title[Intro to Econometrics]{Econometrics}
+\subtitle{Lecture 2: Simple Regression}
+\author{CREST, Institut Polytechnique de Paris}
+\date{Spring 2026}
+
+\begin{document}
+
+% ==============================================================================
+% PART I: THE SIMPLE REGRESSION MODEL
+% ==============================================================================
+
+% --- Slide 1: Title ---
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% --- Slide 2: Recap from Lecture 1 ---
+\begin{frame}{Recap: Foundations from Lecture 1}
+  \textbf{Key results we will build on:}
+  \begin{itemize}
+    \item The \textbf{conditional expectation function} (CEF) $\E[Y \mid X]$ is the best predictor of $Y$ given $X$
+    \item The \textbf{law of iterated expectations} (LIE): $\E[Y] = \E[\E[Y \mid X]]$
+    \item \textbf{Estimators are random variables} --- properties depend on their sampling distributions
+    \item The \textbf{central limit theorem} (CLT) justifies Normal-based inference for large samples
+  \end{itemize}
+
+  \vspace{1em}
+  \begin{highlightbox}
+    Today's question: how do we \emph{estimate} $\E[Y \mid X]$ from data, using a linear model?
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 3: The Question ---
+\begin{frame}{How Does $Y$ Relate to $X$?}
+  \textbf{Motivating questions:}
+  \begin{itemize}
+    \item How does an additional year of \textbf{education} affect \textbf{wages}?
+    \item How does \textbf{class size} affect student \textbf{test scores}?
+    \item How does \textbf{fertilizer use} affect crop \textbf{yield}?
+    \item How does \textbf{job training} affect worker \textbf{productivity}?
+  \end{itemize}
+
+  \vspace{1em}
+  \textbf{In each case, we want to:}
+  \begin{enumerate}
+    \item \key{Quantify} the relationship between $Y$ and $X$
+    \item \key{Test} whether the relationship is statistically significant
+    \item \key{Interpret} the result --- ideally as a causal effect
+  \end{enumerate}
+\end{frame}
+
+% --- Slide 4: The Simple Linear Regression Model ---
+\begin{frame}{The Simple Linear Regression Model}
+  \begin{definitionbox}[Simple Linear Regression]
+    \[ Y_i = \beta_0 + \beta_1 X_i + u_i, \qquad i = 1, \ldots, n \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Components:}
+  \begin{itemize}
+    \item $Y_i$: \textbf{dependent variable} (outcome, response, regressand)
+    \item $X_i$: \textbf{independent variable} (regressor, covariate, explanatory variable)
+    \item $\beta_0$: \textbf{intercept} parameter
+    \item $\beta_1$: \textbf{slope} parameter
+    \item $u_i$: \textbf{error term} (disturbance) --- everything affecting $Y$ besides $X$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{``Simple'' = one explanatory variable. Multiple regression (Lecture~3) allows many.}
+\end{frame}
+
+% --- Slide 5: Interpreting Coefficients ---
+\begin{frame}{Interpreting $\beta_0$ and $\beta_1$}
+  In the model $Y_i = \beta_0 + \beta_1 X_i + u_i$:
+
+  \begin{eqbox}
+    A one-unit increase in $X$ changes $Y$ by $\beta_1$ units, holding $u$ fixed.
+    Under $\E[u \mid X] = 0$ (SLR.4, formalized shortly): $\;\partial\,\E[Y \mid X]/\partial X = \beta_1$.
+  \end{eqbox}
+
+  \vspace{0.3em}
+  \textbf{Intercept} $\beta_0$: predicted value of $Y$ when $X = 0$
+  \begin{itemize}
+    \item Often not economically meaningful (is $X = 0$ realistic?)
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{Slope} $\beta_1$: the marginal effect of $X$ on $Y$
+  \begin{itemize}
+    \item \key{\emph{Ceteris paribus}} interpretation requires assumptions on $u$
+    \item ``Holding other factors constant'' --- but which factors?
+  \end{itemize}
+\end{frame}
+
+% --- Slide 6: The Error Term ---
+\begin{frame}{The Error Term $u_i$}
+  The error term $u_i$ represents \key{all factors} affecting $Y_i$ besides $X_i$:
+
+  \vspace{0.5em}
+  \textbf{In the wage equation} $\ln(\text{wage}_i) = \beta_0 + \beta_1 \, \text{educ}_i + u_i$, the error includes:
+  \begin{itemize}
+    \item Innate ability and intelligence
+    \item Family background and connections
+    \item Work experience and tenure
+    \item Motivation and work ethic
+    \item Measurement error in wages or education
+  \end{itemize}
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    The error term is \textbf{not} just ``randomness.'' It contains real, potentially important factors. Whether ordinary least squares (OLS) gives us a causal estimate depends on how $u_i$ relates to $X_i$.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 7: PRF vs SRF ---
+\begin{frame}{Population vs.\ Sample Regression}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Population Regression Function}
+
+      (PRF)
+      \[ \E[Y \mid X] = \beta_0 + \beta_1 X \]
+      \begin{itemize}
+        \item Describes the \emph{true} relationship
+        \item $\beta_0, \beta_1$ are unknown parameters
+        \item We never observe this directly
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Sample Regression Function}
+
+      (SRF)
+      \[ \hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i \]
+      \begin{itemize}
+        \item Our \emph{estimate} from data
+        \item $\hat{\beta}_0, \hat{\beta}_1$ computed from sample
+        \item Changes with every new sample
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    The goal: use the SRF to learn about the PRF. How close is $\hat{\beta}_1$ to $\beta_1$?
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 8: Returns to Education ---
+\begin{frame}{Returns to Education Revisited}
+  From Lecture~1, the \key{Mincer wage equation} \citep{Mincer1974_schooling}:
+  \begin{eqbox}
+    \[ \ln(\text{wage}_i) = \beta_0 + \beta_1 \, \text{educ}_i + u_i \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Interpretation:}
+  \begin{itemize}
+    \item Because the dependent variable is $\ln(\text{wage})$, $\beta_1$ measures the \textbf{approximate percentage change} in wages per additional year of education
+    \item If $\hat{\beta}_1 = 0.08$: one more year of education is associated with $\approx 8\%$ higher wages
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{The challenge:}
+  \begin{itemize}
+    \item People with more education may also have higher ability
+    \item If ability is in $u_i$ and correlated with $\text{educ}_i$, then $\hat{\beta}_1$ captures \emph{both} the effect of education \emph{and} ability
+    \item This is the \key{omitted variable bias} problem (Lecture~7)
+  \end{itemize}
+\end{frame}
+
+% --- Slide 9: Causal Interpretation ---
+\begin{frame}{When Can We Interpret $\beta_1$ Causally?}
+  $\hat{\beta}_1$ always measures a \textbf{statistical association}. For it to be \textbf{causal}, we need:
+
+  \begin{keybox}
+    The error term $u_i$ must be \textbf{unrelated} to $X_i$ in a specific sense:
+    \[ \E[u \mid X] = 0 \]
+    This is the \textbf{zero conditional mean} assumption --- the single most important condition in this course.
+  \end{keybox}
+
+  \vspace{0.5em}
+  \textbf{When does it fail?}
+  \begin{itemize}
+    \item \textbf{Omitted variables:} a factor in $u$ is correlated with $X$
+    \item \textbf{Reverse causality:} $Y$ also affects $X$
+    \item \textbf{Selection bias:} the sample is not representative conditional on $X$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{We formalize this as Assumption SLR.4 later in this lecture.}
+\end{frame}
+
+% --- Slide 10: Roadmap ---
+\begin{frame}{Roadmap for This Lecture}
+  \begin{enumerate}
+    \item \textcolor{muted}{The Simple Regression Model} \hfill \textcolor{muted}{\checkmark}
+    \item \textbf{Deriving the ordinary least squares (OLS) estimator}
+    \item \textbf{Assumptions for unbiasedness}
+    \item \textbf{Variance, efficiency, and the Gauss--Markov theorem}
+    \item \textbf{Goodness of fit: $R^2$}
+    \item \textbf{Preview of inference}
+  \end{enumerate}
+
+  \vspace{1em}
+  \textbf{Reading:} \citet[Chapters~1--2]{Wooldridge2019_introductory}
+\end{frame}
+
+% ==============================================================================
+% PART II: DERIVING THE OLS ESTIMATOR
+% ==============================================================================
+
+{
+\setbeamercolor{background canvas}{bg=ippblue}
+\setbeamercolor{normal text}{fg=white}
+\usebeamercolor[fg]{normal text}
+\begin{frame}[plain,c]
+  \centering
+  {\Large\textbf{Part II}}\\[0.5em]
+  {\LARGE\textbf{Deriving the OLS Estimator}}\\[1em]
+  {\textcolor{white!70}{Wooldridge, Chapter 2.2}}
+\end{frame}
+}
+
+% --- Slide 12: The Idea ---
+\begin{frame}{The Idea: Best-Fitting Line}
+  \textbf{Goal:} find the line $\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i$ that ``best fits'' the data.
+
+  \vspace{0.5em}
+  \textbf{What does ``best fit'' mean?}
+  \begin{itemize}
+    \item We want the line that makes the \textbf{residuals} $\hat{u}_i = Y_i - \hat{Y}_i$ as small as possible
+    \item We cannot just minimize $\sum \hat{u}_i$ --- positive and negative residuals cancel
+    \item Instead, minimize the \textbf{sum of squared residuals}
+  \end{itemize}
+
+  \vspace{0.5em}
+  \begin{methodbox}
+    \textbf{Ordinary least squares (OLS):} choose $\hat{\beta}_0$ and $\hat{\beta}_1$ to minimize
+    \[ \sum_{i=1}^n \hat{u}_i^2 = \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i)^2 \]
+  \end{methodbox}
+
+  \vspace{0.3em}
+  \mutedtext{Why squared? Penalizes large deviations; yields clean, closed-form solutions.}
+\end{frame}
+
+% --- Slide 13: The Objective Function ---
+\begin{frame}{The OLS Objective Function}
+  Define the sum of squared residuals as a function of $\hat{\beta}_0$ and $\hat{\beta}_1$:
+  \begin{eqbox}
+    \[ S(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i)^2 \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{OLS problem:}
+  \[ \min_{\hat{\beta}_0, \, \hat{\beta}_1} \; S(\hat{\beta}_0, \hat{\beta}_1) \]
+
+  \vspace{0.3em}
+  \textbf{Strategy:}
+  \begin{enumerate}
+    \item Take partial derivatives with respect to $\hat{\beta}_0$ and $\hat{\beta}_1$
+    \item Set them equal to zero (first-order conditions)
+    \item Solve the resulting system of two equations in two unknowns
+  \end{enumerate}
+
+  \mutedtext{$S$ is a convex quadratic in $(\hat{\beta}_0, \hat{\beta}_1)$, so the minimum is unique (if it exists).}
+\end{frame}
+
+% --- Slide 14: First-Order Conditions ---
+\begin{frame}{First-Order Conditions}
+  Taking partial derivatives and setting them to zero:
+
+  \vspace{0.5em}
+  \begin{eqbox}
+    \textbf{First-order condition (FOC) w.r.t.\ $\hat{\beta}_0$:}
+    \[ \frac{\partial S}{\partial \hat{\beta}_0} = -2\sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i) = 0 \]
+
+    \textbf{FOC w.r.t.\ $\hat{\beta}_1$:}
+    \[ \frac{\partial S}{\partial \hat{\beta}_1} = -2\sum_{i=1}^n X_i(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i) = 0 \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  Dividing by $-2$ and rearranging gives the \textbf{normal equations}.
+\end{frame}
+
+% --- Slide 15: The Normal Equations ---
+\begin{frame}{The Normal Equations}
+  Rearranging the first-order conditions:
+
+  \begin{eqbox}
+    \begin{align*}
+      \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i) &= 0 \\[0.3em]
+      \sum_{i=1}^n X_i(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i) &= 0
+    \end{align*}
+  \end{eqbox}
+
+  \vspace{0.3em}
+  \textbf{Interpretation:}
+  \begin{itemize}
+    \item \textbf{First equation:} residuals sum to zero: $\sum_{i=1}^n \hat{u}_i = 0$
+    \item \textbf{Second equation:} residuals are uncorrelated with $X$: $\sum_{i=1}^n X_i \hat{u}_i = 0$
+  \end{itemize}
+
+  These are the \key{sample analogs} of $\E[u] = 0$ and $\E[Xu] = 0$ --- the foundation of the \textbf{method of moments}.
+\end{frame}
+
+% --- Slide 16: The OLS Estimators ---
+\begin{frame}{The OLS Estimators}
+  Solving the normal equations yields closed-form solutions:
+
+  \begin{resultbox}
+    \textbf{OLS estimator of the slope:}
+    \[ \hat{\beta}_1 = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2} \]
+
+    \textbf{OLS estimator of the intercept:}
+    \[ \hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X} \]
+  \end{resultbox}
+
+  \vspace{0.3em}
+  where $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$ and $\bar{Y} = \frac{1}{n}\sum_{i=1}^n Y_i$ are the sample means.
+  The OLS line always passes through the point $(\bar{X}, \bar{Y})$.
+\end{frame}
+
+% --- Slide 17: Intuition for the Slope ---
+\begin{frame}{Intuition for $\hat{\beta}_1$}
+  \[ \hat{\beta}_1 = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2} = \frac{\text{sample covariance of } X \text{ and } Y}{\text{sample variance of } X} \]
+
+  \vspace{0.5em}
+  \textbf{Reading the formula:}
+  \begin{itemize}
+    \item \textbf{Numerator:} how $X$ and $Y$ move together (co-movement)
+    \item \textbf{Denominator:} how much $X$ varies (spread of $X$)
+    \item $\hat{\beta}_1$ \key{scales} the co-movement by the variation in $X$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Connection to correlation:}
+  \[ \hat{\beta}_1 = \widehat{\Corr}(X, Y) \cdot \frac{\hat{\sigma}_Y}{\hat{\sigma}_X} \]
+
+  If $X$ and $Y$ are positively correlated, $\hat{\beta}_1 > 0$. The stronger the correlation and the larger $\hat{\sigma}_Y / \hat{\sigma}_X$, the larger $|\hat{\beta}_1|$.
+\end{frame}
+
+% --- Slide 18: Fitted Values and Residuals ---
+\begin{frame}{Fitted Values and Residuals}
+  \begin{definitionbox}[Fitted Values and Residuals]
+    \textbf{Fitted values:} \quad $\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i$ \hfill (predicted $Y$ for observation $i$)
+
+    \textbf{Residuals:} \quad $\hat{u}_i = Y_i - \hat{Y}_i$ \hfill (prediction error for observation $i$)
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Key relationship:}
+  \[ Y_i = \hat{Y}_i + \hat{u}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i + \hat{u}_i \]
+
+  Every observation decomposes into a \textbf{fitted part} (explained by the model) and a \textbf{residual} (unexplained).
+
+  \vspace{0.5em}
+  \textbf{Important distinction:}
+  \begin{itemize}
+    \item \textbf{Errors} $u_i$: unobserved, theoretical
+    \item \textbf{Residuals} $\hat{u}_i$: observed, computed from the sample
+  \end{itemize}
+\end{frame}
+
+% --- Slide 19: Algebraic Properties ---
+\begin{frame}{Algebraic Properties of OLS}
+  These properties hold \textbf{by construction} --- they follow from the normal equations, not from any assumptions about the data:
+
+  \vspace{0.5em}
+  \begin{eqbox}
+    \begin{enumerate}
+      \item $\displaystyle\sum_{i=1}^n \hat{u}_i = 0$ \hfill (residuals sum to zero)
+
+      \item $\displaystyle\sum_{i=1}^n X_i \hat{u}_i = 0$ \hfill (residuals uncorrelated with $X$)
+
+      \item $\bar{Y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{X}$ \hfill (line passes through $(\bar{X}, \bar{Y})$)
+
+      \item $\bar{\hat{Y}} = \bar{Y}$ \hfill (mean of fitted values equals mean of $Y$)
+    \end{enumerate}
+  \end{eqbox}
+
+  \vspace{0.3em}
+  \mutedtext{Properties 1--2 are the first-order conditions. Properties 3--4 follow directly.}
+\end{frame}
+
+% --- Slide 20: OLS Summary ---
+\begin{frame}{OLS Derivation: Summary}
+  \begin{resultbox}
+    \textbf{OLS minimizes} $\sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i)^2$ and yields:
+    \begin{align*}
+      \hat{\beta}_1 &= \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2} \\[0.5em]
+      \hat{\beta}_0 &= \bar{Y} - \hat{\beta}_1 \bar{X}
+    \end{align*}
+  \end{resultbox}
+
+  \vspace{0.3em}
+  \textbf{What we have so far:} a mechanical procedure to fit a line to data.
+
+  \vspace{0.3em}
+  \textbf{What we still need:}
+  \begin{itemize}
+    \item Under what conditions does $\hat{\beta}_1$ tell us something meaningful about $\beta_1$?
+    \item Is $\hat{\beta}_1$ unbiased? How precise is it? How well does the line fit?
+  \end{itemize}
+
+  \mutedtext{This is where assumptions come in.}
+\end{frame}
+
+% ==============================================================================
+% PART III: ASSUMPTIONS AND PROPERTIES
+% ==============================================================================
+
+{
+\setbeamercolor{background canvas}{bg=ippblue}
+\setbeamercolor{normal text}{fg=white}
+\usebeamercolor[fg]{normal text}
+\begin{frame}[plain,c]
+  \centering
+  {\Large\textbf{Part III}}\\[0.5em]
+  {\LARGE\textbf{Assumptions and Properties}}\\[1em]
+  {\textcolor{white!70}{Wooldridge, Chapter 2.5}}
+\end{frame}
+}
+
+% --- Slide 22: Why Assumptions ---
+\begin{frame}{Why Do We Need Assumptions?}
+  OLS is a \key{purely mechanical} procedure:
+  \begin{itemize}
+    \item You can always compute $\hat{\beta}_0$ and $\hat{\beta}_1$ from data
+    \item OLS does not care where the data came from or what the model means
+    \item Without assumptions, $\hat{\beta}_1$ is just a number --- not an estimate of anything
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Assumptions serve two purposes:}
+  \begin{enumerate}
+    \item \textbf{Interpretation:} connect $\hat{\beta}_1$ to the population parameter $\beta_1$
+    \item \textbf{Properties:} guarantee desirable behavior (unbiasedness, efficiency, valid inference)
+  \end{enumerate}
+
+  \vspace{0.3em}
+  The assumptions we state are \emph{sufficient conditions}. When they fail, OLS may still work --- but we can no longer guarantee it.
+\end{frame}
+
+% --- Slide 23: SLR.1 ---
+\begin{frame}{Assumption SLR.1: Linear in Parameters}
+  \begin{assumptionbox}
+    \textbf{SLR.1 (Linear in Parameters):} The population model is
+    \[ Y = \beta_0 + \beta_1 X + u \]
+    where $\beta_0$ and $\beta_1$ are unknown parameters and $u$ is the error term.
+  \end{assumptionbox}
+
+  \vspace{0.5em}
+  \textbf{What ``linear in parameters'' means:}
+  \begin{itemize}
+    \item $Y$ is a \emph{linear function} of $\beta_0$ and $\beta_1$
+    \item $X$ can be transformed: $\ln(X)$, $X^2$, $1/X$ are all fine
+    \item $Y = \beta_0 + \beta_1 X^2 + u$ \; \highlight{is} linear in parameters
+    \item $Y = \beta_0 + \beta_1^2 X + u$ \; \key{is not} linear in parameters
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{``Linear regression'' refers to linearity in $\beta$, not in $X$.}
+\end{frame}
+
+% --- Slide 24: SLR.2 ---
+\begin{frame}{Assumption SLR.2: Random Sampling}
+  \begin{assumptionbox}
+    \textbf{SLR.2 (Random Sampling):} We have a random sample $\{(X_i, Y_i) : i = 1, \ldots, n\}$ from the population model.
+  \end{assumptionbox}
+
+  \vspace{0.5em}
+  \textbf{This means:}
+  \begin{itemize}
+    \item Each $(X_i, Y_i)$ is drawn independently from the same joint distribution
+    \item The relationship $Y_i = \beta_0 + \beta_1 X_i + u_i$ holds for every observation
+    \item The parameters $\beta_0, \beta_1$ are the \emph{same} for all $i$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{When might this fail?}
+  \begin{itemize}
+    \item \textbf{Time series:} observations are typically dependent over time
+    \item \textbf{Clustered data:} students in the same school are correlated
+    \item \textbf{Self-selection:} only certain people respond to a survey
+  \end{itemize}
+\end{frame}
+
+% --- Slide 25: SLR.3 ---
+\begin{frame}{Assumption SLR.3: Sample Variation in $X$}
+  \begin{assumptionbox}
+    \textbf{SLR.3 (Sample Variation):} The sample values $X_1, \ldots, X_n$ are not all equal:
+    \[ \sum_{i=1}^n (X_i - \bar{X})^2 > 0 \]
+  \end{assumptionbox}
+
+  \vspace{0.5em}
+  \textbf{Why do we need this?}
+  \begin{itemize}
+    \item Recall: $\hat{\beta}_1 = \frac{\sum(X_i - \bar{X})(Y_i - \bar{Y})}{\sum(X_i - \bar{X})^2}$
+    \item If all $X_i$ are equal, the denominator is \key{zero} --- $\hat{\beta}_1$ is undefined
+    \item \textbf{Intuition:} you cannot learn the effect of $X$ on $Y$ if $X$ never varies
+  \end{itemize}
+
+  \vspace{0.3em}
+  This is a \emph{sample} requirement. More variation in $X$ leads to more precise estimates --- we formalize this when deriving $\Var(\hat{\beta}_1)$.
+\end{frame}
+
+% --- Slide 26: SLR.4 ---
+\begin{frame}{Assumption SLR.4: Zero Conditional Mean}
+  \begin{assumptionbox}
+    \textbf{SLR.4 (Zero Conditional Mean):} The error has zero mean conditional on $X$:
+    \[ \E[u \mid X] = 0 \]
+  \end{assumptionbox}
+
+  \vspace{0.3em}
+  \textbf{What this says:}
+  \begin{itemize}
+    \item For \emph{any} value of $X$, the average of the unobserved factors is zero
+    \item Knowing $X$ gives \key{no information} about $u$
+    \item The population regression function is: $\E[Y \mid X] = \beta_0 + \beta_1 X$
+  \end{itemize}
+
+  \textbf{Implications:}
+  \begin{itemize}
+    \item $\E[u] = 0$ \quad (by LIE: $\E[u] = \E[\E[u \mid X]] = 0$)
+    \item $\Cov(X, u) = 0$ \quad (implied, but the converse is \emph{false})
+  \end{itemize}
+
+  This is the \key{single most important assumption} in this course. Nearly every endogeneity problem reduces to a violation of $\E[u \mid X] = 0$.
+\end{frame}
+
+% --- Slide 27: Proving Unbiasedness ---
+\begin{frame}{Proving Unbiasedness of OLS}
+  \textbf{Claim:} Under SLR.1--SLR.4, $\E[\hat{\beta}_1 \mid \mathbf{X}] = \beta_1$.
+
+  \vspace{0.3em}
+  \textbf{Step 1:} Substitute $Y_i = \beta_0 + \beta_1 X_i + u_i$ into $\hat{\beta}_1$:
+  \[ \hat{\beta}_1 = \beta_1 + \frac{\sum_{i=1}^n (X_i - \bar{X}) u_i}{\sum_{i=1}^n (X_i - \bar{X})^2} \]
+
+  \textbf{Step 2:} Conditional expectation given $\mathbf{X} = (X_1, \ldots, X_n)$:
+  \[ \E[\hat{\beta}_1 \mid \mathbf{X}] = \beta_1 + \frac{\sum (X_i - \bar{X}) \, \E[u_i \mid \mathbf{X}]}{\sum (X_i - \bar{X})^2} \]
+
+  \textbf{Step 3:} By SLR.2 + SLR.4: $\E[u_i \mid \mathbf{X}] = \E[u_i \mid X_i] = 0$:
+  \begin{resultbox}
+    $\E[\hat{\beta}_1 \mid \mathbf{X}] = \beta_1$. \;
+    By LIE: $\E[\hat{\beta}_1] = \E[\E[\hat{\beta}_1 \mid \mathbf{X}]] = \beta_1$. \quad OLS is \textbf{unbiased}.
+  \end{resultbox}
+\end{frame}
+
+% --- Slide 28: What ZCM Rules Out ---
+\begin{frame}{What $\E[u \mid X] = 0$ Rules Out}
+  When $\E[u \mid X] \neq 0$, OLS is \key{biased}: $\E[\hat{\beta}_1] \neq \beta_1$.
+
+  \vspace{0.5em}
+  \textbf{1.\ Omitted variable bias} --- a factor in $u$ is correlated with $X$
+  \begin{itemize}
+    \item Education example: ability is in $u$ and correlates with $\text{educ}$
+    \item $\hat{\beta}_1$ captures education effect $+$ ability effect $\Rightarrow$ upward bias
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{2.\ Reverse causality} --- $Y$ also affects $X$
+  \begin{itemize}
+    \item Police and crime: more crime $\to$ more police $\to$ positive $\Cov(X, u)$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{3.\ Measurement error} --- $X$ is measured with noise
+  \begin{itemize}
+    \item If we observe $X = X^* + \varepsilon$ instead of the true $X^*$, the noise correlates with observed $X$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{Solutions: multiple regression (L3), IV (L8), panel data (L10).}
+\end{frame}
+
+% ==============================================================================
+% PART IV: VARIANCE AND EFFICIENCY
+% ==============================================================================
+
+% --- Slide 29: SLR.5 ---
+\begin{frame}{Assumption SLR.5: Homoskedasticity}
+  \begin{assumptionbox}
+    \textbf{SLR.5 (Homoskedasticity):} The error has constant variance conditional on $X$:
+    \[ \Var(u \mid X) = \sigma^2 \]
+  \end{assumptionbox}
+
+  \vspace{0.5em}
+  \textbf{Intuition:} the ``spread'' of $u$ around zero does not depend on $X$.
+
+  \vspace{0.5em}
+  \textbf{When might this fail?}
+  \begin{itemize}
+    \item Wage variance often \emph{increases} with education level
+    \item Consumption variance often \emph{increases} with income
+  \end{itemize}
+
+  When $\Var(u \mid X)$ varies with $X$, we have \key{heteroskedasticity} (Lecture~6).
+
+  \vspace{0.3em}
+  SLR.5 is \emph{not} needed for unbiasedness --- only for the standard variance formula and the Gauss--Markov result.
+\end{frame}
+
+% --- Slide 30: Variance of OLS ---
+\begin{frame}{Variance of $\hat{\beta}_1$}
+  Under SLR.1--SLR.5, the conditional variance of $\hat{\beta}_1$ is:
+
+  \begin{eqbox}
+    \[ \Var(\hat{\beta}_1 \mid \mathbf{X}) = \frac{\sigma^2}{\sum_{i=1}^n (X_i - \bar{X})^2} = \frac{\sigma^2}{\text{SST}_x} \]
+    where $\text{SST}_x = \sum_{i=1}^n (X_i - \bar{X})^2$ is the total variation in $X$.
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{What makes $\hat{\beta}_1$ more precise?}
+  \begin{enumerate}
+    \item \textbf{Smaller $\sigma^2$:} less noise in $u$ $\Rightarrow$ sharper estimates
+    \item \textbf{Larger $\text{SST}_x$:} more variation in $X$ $\Rightarrow$ more information about the slope
+    \item \textbf{Larger $n$:} more data $\Rightarrow$ $\text{SST}_x$ grows $\Rightarrow$ variance shrinks
+  \end{enumerate}
+
+  \vspace{0.3em}
+  \mutedtext{Research design implication: choose $X$ values with high spread when possible.}
+\end{frame}
+
+% --- Slide 31: Estimating Sigma Squared ---
+\begin{frame}{Estimating $\sigma^2$: The Standard Error of the Regression}
+  The error variance $\sigma^2 = \Var(u \mid X)$ is unknown. We estimate it using residuals:
+
+  \begin{eqbox}
+    \[ \hat{\sigma}^2 = \frac{1}{n - 2} \sum_{i=1}^n \hat{u}_i^2 \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Why $n - 2$?}
+  \begin{itemize}
+    \item We lose 2 \textbf{degrees of freedom} from estimating $\beta_0$ and $\beta_1$
+    \item The correction ensures unbiasedness: $\E[\hat{\sigma}^2] = \sigma^2$
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \textbf{standard error of the regression} (SER) is:
+  \[ \hat{\sigma} = \sqrt{\hat{\sigma}^2} \]
+
+  It measures the typical size of the OLS residuals --- the ``spread'' of $Y$ around the regression line, in the units of $Y$.
+\end{frame}
+
+% --- Slide 32: Standard Errors ---
+\begin{frame}{Standard Errors of the OLS Estimators}
+  Replacing $\sigma^2$ with $\hat{\sigma}^2$ gives the estimated standard errors:
+
+  \begin{eqbox}
+    \textbf{Slope:} \quad $\text{se}(\hat{\beta}_1) = \dfrac{\hat{\sigma}}{\sqrt{\text{SST}_x}}$
+
+    \vspace{0.5em}
+    \textbf{Intercept:} \quad $\text{se}(\hat{\beta}_0) = \hat{\sigma} \cdot \sqrt{\dfrac{\sum_{i=1}^n X_i^2}{n \cdot \text{SST}_x}}$
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Standard errors} measure the precision of our estimates. They are used for:
+  \begin{itemize}
+    \item \textbf{Confidence intervals:} $\hat{\beta}_1 \pm t_{n-2,\,\alpha/2} \cdot \text{se}(\hat{\beta}_1)$
+    \item \textbf{Hypothesis tests:} $t = \frac{\hat{\beta}_1 - \beta_{1,0}}{\text{se}(\hat{\beta}_1)}$
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{Full inference is covered in Lectures~3--4. For now, focus on what drives precision.}
+\end{frame}
+
+% --- Slide 33: Gauss-Markov ---
+\begin{frame}{The Gauss--Markov Theorem}
+  \begin{resultbox}
+    \textbf{Gauss--Markov Theorem:} Under SLR.1--SLR.5, the OLS estimators $\hat{\beta}_0$ and $\hat{\beta}_1$ are the \textbf{best linear unbiased estimators} (BLUE).
+  \end{resultbox}
+
+  \vspace{0.5em}
+  \textbf{What ``BLUE'' means:}
+  \begin{itemize}
+    \item \textbf{Best:} lowest variance among all estimators that are\ldots
+    \item \textbf{Linear:} \ldots linear functions of $Y_1, \ldots, Y_n$, and\ldots
+    \item \textbf{Unbiased:} \ldots unbiased for $\beta_j$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Intuition:} among all unbiased estimators that are linear in $Y$, OLS has the highest precision.
+
+  \vspace{0.3em}
+  \textbf{Caveat:} Gauss--Markov does \emph{not} say OLS is the best of all estimators --- only the best \emph{linear unbiased} one. Biased or nonlinear estimators can have lower mean squared error.
+\end{frame}
+
+% --- Slide 34: Normality ---
+\begin{frame}{Assumption SLR.6: Normality of Errors}
+  \begin{assumptionbox}
+    \textbf{SLR.6 (Normality):} $u \mid X \sim N(0, \sigma^2)$
+
+    Combined with SLR.1--SLR.5, this gives the \textbf{classical linear model} (CLM) assumptions.
+  \end{assumptionbox}
+
+  \vspace{0.5em}
+  \textbf{What normality buys us:}
+  \begin{itemize}
+    \item OLS estimators are \emph{exactly} Normal:
+      $\hat{\beta}_1 \mid \mathbf{X} \sim N\!\big(\beta_1, \; \sigma^2 / \text{SST}_x\big)$
+    \item The $t$-statistic follows an \emph{exact} $t$-distribution (not just approximately)
+    \item Enables exact finite-sample inference (no need for large $n$)
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Without normality:}
+  \begin{itemize}
+    \item OLS is still BLUE (Gauss--Markov only needs SLR.1--SLR.5)
+    \item Inference is valid \emph{asymptotically} via CLT (Lecture~5)
+    \item For large $n$, the normality assumption matters very little
+  \end{itemize}
+\end{frame}
+
+% --- Slide 35: Assumption Summary ---
+\begin{frame}{Summary: The SLR Assumptions}
+  \begin{assumptionbox}
+    \textbf{SLR.1:} $Y = \beta_0 + \beta_1 X + u$ \hfill (linear in parameters)
+
+    \textbf{SLR.2:} $\{(X_i, Y_i)\}_{i=1}^n$ is a random sample \hfill (random sampling)
+
+    \textbf{SLR.3:} $\sum(X_i - \bar{X})^2 > 0$ \hfill (variation in $X$)
+
+    \textbf{SLR.4:} $\E[u \mid X] = 0$ \hfill (zero conditional mean)
+
+    \textbf{SLR.5:} $\Var(u \mid X) = \sigma^2$ \hfill (homoskedasticity)
+  \end{assumptionbox}
+  \vspace{-0.3em}
+  \begin{center}
+    \small
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{What you get} & \textbf{Assumptions needed} \\
+      \midrule
+      OLS computable & SLR.1--SLR.3 \\
+      Unbiasedness & SLR.1--SLR.4 \\
+      Standard variance formula & SLR.1--SLR.5 \\
+      BLUE (Gauss--Markov) & SLR.1--SLR.5 \\
+      Exact $t$ and $F$ tests & SLR.1--SLR.5 $+$ SLR.6 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% ==============================================================================
+% PART V: MEASURING FIT
+% ==============================================================================
+
+{
+\setbeamercolor{background canvas}{bg=ippblue}
+\setbeamercolor{normal text}{fg=white}
+\usebeamercolor[fg]{normal text}
+\begin{frame}[plain,c]
+  \centering
+  {\Large\textbf{Part V}}\\[0.5em]
+  {\LARGE\textbf{Measuring Fit}}\\[1em]
+  {\textcolor{white!70}{Wooldridge, Chapter 2.3}}
+\end{frame}
+}
+
+% --- Slide 37: Total Variation Decomposition ---
+\begin{frame}{Decomposing Total Variation in $Y$}
+  \textbf{Total variation:} how much does $Y$ vary around its mean?
+  \[ Y_i - \bar{Y} = \underbrace{(\hat{Y}_i - \bar{Y})}_{\text{explained}} + \underbrace{\hat{u}_i}_{\text{residual}} \]
+
+  Squaring and summing (the cross-term vanishes since $\sum \hat{u}_i(\hat{Y}_i - \bar{Y}) = 0$):
+
+  \begin{eqbox}
+    \[ \underbrace{\sum_{i=1}^n (Y_i - \bar{Y})^2}_{\text{TSS}} = \underbrace{\sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2}_{\text{ESS}} + \underbrace{\sum_{i=1}^n \hat{u}_i^2}_{\text{RSS}} \]
+  \end{eqbox}
+
+  \vspace{0.3em}
+  \begin{itemize}
+    \item \textbf{TSS} --- total sum of squares: total variation in $Y$
+    \item \textbf{ESS} --- explained sum of squares: variation explained by the model
+    \item \textbf{RSS} --- residual sum of squares: unexplained variation
+  \end{itemize}
+\end{frame}
+
+% --- Slide 38: R-squared ---
+\begin{frame}{$R^2$: The Coefficient of Determination}
+  \begin{definitionbox}[$R^2$]
+    \[ R^2 = \frac{\text{ESS}}{\text{TSS}} = 1 - \frac{\text{RSS}}{\text{TSS}} \]
+    The \textbf{fraction of the total variation in $Y$ explained by the regression}.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Properties:}
+  \begin{itemize}
+    \item $0 \leq R^2 \leq 1$ \quad (in simple regression with an intercept)
+    \item $R^2 = 0$: the model explains \emph{none} of the variation ($\hat{\beta}_1 = 0$)
+    \item $R^2 = 1$: the model explains \emph{all} of the variation (all points on the line)
+    \item In simple regression: $R^2 = \big[\widehat{\Corr}(Y, X)\big]^2$
+  \end{itemize}
+\end{frame}
+
+% --- Slide 39: R-squared Pitfalls ---
+\begin{frame}{What $R^2$ Does and Does Not Tell You}
+  \textbf{\textcolor{positive}{$R^2$ is useful for:}}
+  \begin{itemize}
+    \item Summarizing how well the model fits the data
+    \item Comparing nested models (same dependent variable)
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{\textcolor{negative}{$R^2$ does \emph{not} tell you:}}
+  \begin{itemize}
+    \item Whether $\hat{\beta}_1$ is causal
+    \item Whether the model is correctly specified
+    \item Whether the right variables are included
+    \item That a ``high'' $R^2$ means the model is ``good''
+  \end{itemize}
+
+  \vspace{0.5em}
+  \begin{keybox}
+    A low $R^2$ does \emph{not} mean the regression is useless. If $\hat{\beta}_1$ is unbiased and precisely estimated, the effect of $X$ on $Y$ can be well-identified even when many other factors also affect $Y$.
+  \end{keybox}
+\end{frame}
+
+% --- Slide 40: R-squared Example ---
+\begin{frame}{Example: $R^2$ in the Wage Equation}
+  Suppose we estimate:
+  \[ \widehat{\ln(\text{wage})} = 0.584 + 0.083 \cdot \text{educ}, \qquad R^2 = 0.186 \]
+
+  \vspace{0.5em}
+  \textbf{Interpretation of $R^2 = 0.186$:}
+  \begin{itemize}
+    \item Education explains about 19\% of the variation in log wages
+    \item The other 81\% is due to experience, ability, occupation, region, etc.
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Is this ``bad''?} \key{Not necessarily.}
+  \begin{itemize}
+    \item In cross-sectional microdata, $R^2$ of $0.1$--$0.3$ is common
+    \item Humans differ in \emph{many} ways --- no single variable explains most of the variation
+    \item $\hat{\beta}_1 = 0.083$ ($\approx 8.3\%$ return per year) is economically significant
+  \end{itemize}
+
+  \vspace{0.3em}
+  \mutedtext{Illustrative; based on typical Current Population Survey wage regressions. See \citet[Ch.~2]{Wooldridge2019_introductory}.}
+\end{frame}
+
+% ==============================================================================
+% PART VI: PREVIEW & WRAP-UP
+% ==============================================================================
+
+% --- Slide 41: Inference Preview ---
+\begin{frame}{Preview: Inference for $\beta_1$}
+  With the SLR assumptions, we can \textbf{test hypotheses} and build \textbf{confidence intervals}:
+
+  \vspace{0.5em}
+  \textbf{$t$-test} for $H_0\!: \beta_1 = 0$ (``$X$ has no effect on $Y$''):
+  \begin{eqbox}
+    \[ t = \frac{\hat{\beta}_1}{\text{se}(\hat{\beta}_1)} \sim t_{n-2} \quad \text{under } H_0 \text{ and SLR.1--SLR.6} \]
+  \end{eqbox}
+
+  \vspace{0.3em}
+  \textbf{95\% confidence interval} for $\beta_1$:
+  \begin{eqbox}
+    \[ \hat{\beta}_1 \pm t_{n-2,\,0.025} \cdot \text{se}(\hat{\beta}_1) \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \mutedtext{Full development in Lectures~3--4. Standard errors are the bridge from estimation to inference.}
+\end{frame}
+
+% --- Slide 42: What's Next ---
+\begin{frame}{Next Time: Multiple Regression}
+  In Lecture~3, we extend to multiple explanatory variables:
+  \begin{eqbox}
+    \[ Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + u_i \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Why we need multiple regression:}
+  \begin{itemize}
+    \item Control for confounding variables (reduce omitted variable bias)
+    \item Isolate the effect of one variable, holding others constant
+    \item Improve model fit and prediction
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{What we will cover:} OLS in matrix form, interpreting coefficients, the Frisch--Waugh--Lovell theorem, $R^2$ and adjusted $R^2$.
+
+  \vspace{0.3em}
+  \textbf{Reading:} \citet[Chapter~3]{Wooldridge2019_introductory}
+\end{frame}
+
+% --- Slide 43: Key Takeaways ---
+\begin{frame}{Key Takeaways}
+  \begin{keybox}
+    \begin{enumerate}
+      \item The simple regression model $Y = \beta_0 + \beta_1 X + u$ relates an outcome to one explanatory variable
+      \item \textbf{OLS} minimizes $\sum \hat{u}_i^2$ and yields $\hat{\beta}_1 = \frac{\text{sample cov.\ of } X,Y}{\text{sample var.\ of } X}$
+      \item Under SLR.1--SLR.4, OLS is \textbf{unbiased}: $\E[\hat{\beta}_1] = \beta_1$
+      \item The \textbf{zero conditional mean} assumption $\E[u \mid X] = 0$ is crucial for causal interpretation
+      \item Under SLR.1--SLR.5, OLS is \textbf{BLUE} (Gauss--Markov theorem)
+      \item $R^2$ measures fit but says nothing about causality
+    \end{enumerate}
+  \end{keybox}
+\end{frame}
+
+% --- Slide 44: References ---
+\begin{frame}[allowframebreaks]{References}
+  \bibliographystyle{apalike}
+  \bibliography{../Bibliography_base}
+\end{frame}
+
+\end{document}

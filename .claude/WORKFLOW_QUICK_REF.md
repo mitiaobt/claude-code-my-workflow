@@ -48,26 +48,24 @@ Repeat
 
 ---
 
-## Non-Negotiables (Customize These)
+## Non-Negotiables
 
-<!-- Replace with YOUR project's locked-in preferences -->
-
-- [YOUR PATH CONVENTION] (e.g., `here::here()` for R, relative paths for LaTeX)
-- [YOUR SEED CONVENTION] (e.g., `set.seed()` once at top for stochastic code)
-- [YOUR FIGURE STANDARDS] (e.g., white bg, 300 DPI, custom theme)
-- [YOUR COLOR PALETTE] (e.g., institutional colors)
-- [YOUR TOLERANCE THRESHOLDS] (e.g., 1e-6 for point estimates)
+- **Path convention:** `here::here()` for R, relative paths for LaTeX (`../Preambles/`, `../Figures/`)
+- **Seed convention:** `set.seed(YYYYMMDD)` once at top of every stochastic R script
+- **Figure standards:** transparent bg, IP Paris theme (`theme_ipp()`), 300 DPI, `width = 12, height = 5`
+- **Color palette:** IP Paris blues (`#233E5C`, `#144563`, `#018BD3`, `#61ABF6`) + red accent (`#C0392B`)
+- **Tolerance thresholds:** Point estimates 1e-6, SE 1e-4, t-stats 1e-3, p-values 1e-4
+- **Robust SE by default:** Never report classical SE without explicit justification
+- **Cluster SE for panels:** Always specify cluster variable for panel data
 
 ---
 
 ## Preferences
 
-<!-- Fill in as you discover your working style -->
-
-**Visual:** [How you want figures/plots handled]
-**Reporting:** [Concise bullets? Detailed prose? Details on request?]
+**Visual:** IP Paris palette, transparent backgrounds, minimal ggplot2 themes
+**Reporting:** Concise bullets; details on request
 **Session logs:** Always (post-plan, incremental, end-of-session)
-**Replication:** [How strict? Flag near-misses?]
+**Replication:** Strict — flag anything outside tolerance thresholds
 
 ---
 

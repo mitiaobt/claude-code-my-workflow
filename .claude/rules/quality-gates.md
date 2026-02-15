@@ -56,12 +56,14 @@ paths:
 Generated **only at merge time**. Use `templates/quality-report.md` for format.
 Save to `quality_reports/merges/YYYY-MM-DD_[branch-name].md`.
 
-## Tolerance Thresholds (Research)
-
-<!-- Customize for your domain -->
+## Tolerance Thresholds (Econometrics)
 
 | Quantity | Tolerance | Rationale |
 |----------|-----------|-----------|
-| Point estimates | [e.g., 1e-6] | [Numerical precision] |
-| Standard errors | [e.g., 1e-4] | [MC variability] |
-| Coverage rates | [e.g., +/- 0.01] | [MC with B reps] |
+| Point estimates | 1e-6 | Numerical precision of OLS/IV estimators |
+| Standard errors | 1e-4 | Rounding in robust/cluster SE computation |
+| t-statistics | 1e-3 | Derived quantity, tolerance propagates |
+| p-values | 1e-4 | Sensitive to tail approximation |
+| Coverage rates | +/- 0.01 | MC variability with B >= 1000 reps |
+| R-squared | 1e-6 | Deterministic given data |
+| F-statistics | 1e-3 | Derived from restricted/unrestricted models |

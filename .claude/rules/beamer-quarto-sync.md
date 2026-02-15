@@ -14,12 +14,21 @@ When you modify a Beamer `.tex` file, you MUST also apply the equivalent change 
 
 ## Lecture Mapping
 
-<!-- Customize this table for your lectures -->
 | Lecture | Beamer | Quarto |
 |---------|--------|--------|
-| 1 | `Slides/Lecture1_Topic.tex` | `Quarto/Lecture1_Topic.qmd` |
-| 2 | `Slides/Lecture2_Topic.tex` | `Quarto/Lecture2_Topic.qmd` |
-<!-- Add rows as you create lectures -->
+| 1 | `Slides/Lecture01_Intro.tex` | `Quarto/Lecture01_Intro.qmd` |
+| 2 | `Slides/Lecture02_SimpleRegression.tex` | `Quarto/Lecture02_SimpleRegression.qmd` |
+| 3 | `Slides/Lecture03_MultipleRegression.tex` | `Quarto/Lecture03_MultipleRegression.qmd` |
+| 4 | `Slides/Lecture04_Inference.tex` | `Quarto/Lecture04_Inference.qmd` |
+| 5 | `Slides/Lecture05_Asymptotics.tex` | `Quarto/Lecture05_Asymptotics.qmd` |
+| 6 | `Slides/Lecture06_Heteroskedasticity.tex` | `Quarto/Lecture06_Heteroskedasticity.qmd` |
+| 7 | `Slides/Lecture07_Specification.tex` | `Quarto/Lecture07_Specification.qmd` |
+| 8 | `Slides/Lecture08_IV.tex` | `Quarto/Lecture08_IV.qmd` |
+| 9 | `Slides/Lecture09_SimultaneousEq.tex` | `Quarto/Lecture09_SimultaneousEq.qmd` |
+| 10 | `Slides/Lecture10_PanelData.tex` | `Quarto/Lecture10_PanelData.qmd` |
+| 11 | `Slides/Lecture11_BinaryResponse.tex` | `Quarto/Lecture11_BinaryResponse.qmd` |
+| 12 | `Slides/Lecture12_TimeSeries.tex` | `Quarto/Lecture12_TimeSeries.qmd` |
+| 13 | `Slides/Lecture13_Advanced.tex` | `Quarto/Lecture13_Advanced.qmd` |
 
 ## Workflow (Every Time)
 
@@ -33,13 +42,23 @@ When you modify a Beamer `.tex` file, you MUST also apply the equivalent change 
 
 | Beamer | Quarto Equivalent |
 | ------ | ----------------- |
-| `\muted{text}` | `[text]{style="color: #525252;"}` |
-| `\key{text}` | `[**text**]{.emorygold}` |
+| `\mutedtext{text}` | `[text]{style="color: #525252;"}` |
+| `\key{text}` | `[**text**]{.hi-red}` |
+| `\highlight{text}` | `[text]{.ipphighlight}` |
+| `\textcolor{ippblue}{text}` | `[text]{.ippblue}` |
+| `\textcolor{crestblue}{text}` | `[text]{.ippaccent}` |
+| `\textcolor{accentblue}{text}` | `[text]{.ipphighlight}` |
+| `\textcolor{warmaccent}{text}` | `[text]{.hi-red}` |
 | `\textcolor{positive}{text}` | `[text]{.positive}` |
 | `\textcolor{negative}{text}` | `[text]{.negative}` |
 | `\item text` | `- text` |
+| `\begin{keybox}` | `::: {.keybox}` |
 | `\begin{highlightbox}` | `::: {.highlightbox}` |
 | `\begin{methodbox}` | `::: {.methodbox}` |
+| `\begin{assumptionbox}` | `::: {.assumptionbox}` |
+| `\begin{definitionbox}[Title]` | `::: {.assumptionbox}\n### Title` |
+| `\begin{resultbox}` | `::: {.resultbox}` |
+| `\begin{eqbox}` | `::: {.eqbox}` |
 | `$formula$` | `$formula$` (same) |
 
 ## When NOT to Sync

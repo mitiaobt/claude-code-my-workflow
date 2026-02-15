@@ -1,22 +1,22 @@
 /*-- scss:defaults --*/
 
 // ==============================================================================
-// INSTITUTIONAL COLORS
+// INSTITUTIONAL COLORS — Institut Polytechnique de Paris / CREST
 // ==============================================================================
-// Customize these for your university/institution:
-//   1. Replace color values with your institution's brand colors
-//   2. Update variable names if desired (but keep the semantic mapping)
-//   3. The rest of the theme adapts automatically
 
-$primary-blue: #012169;        // Primary institutional color (headings, accents)
-$primary-gold: #B9975B;        // Secondary color (emphasis, borders)
-$highlight-yellow: #F2A900;    // Highlight color (markers, alerts)
+$primary-blue: #233e5c;        // IP Paris dark blue (headings, accents)
+$crest-blue: #144563;          // CREST blue (secondary emphasis)
+$accent-blue: #018bd3;         // IP Paris vibrant blue (highlights, alerts)
+$light-blue: #61abf6;          // Light blue (soft accents)
+$dark-navy: #011a29;           // CREST dark navy (footer/nav)
+$warm-accent: #C0392B;         // Complementary red (key boxes, emphasis)
+
 $light-bg: #E8EDF5;           // Light background for title/section slides
 
 // Semantic color mapping (don't change these names)
 $jet: #1a1a1a;
 $accent: $primary-blue;
-$accent2: $primary-gold;
+$accent2: $warm-accent;
 $right-arrow: "\2192";
 
 // Fonts - use system sans-serif for reliability
@@ -36,7 +36,7 @@ $presentation-h2-font-size: 1.4em;
 // Colors
 $body-color: $jet !default;
 $link-color: $primary-blue !default;
-$selection-bg: $primary-gold !default;
+$selection-bg: $warm-accent !default;
 
 
 /*-- scss:rules --*/
@@ -57,7 +57,7 @@ $selection-bg: $primary-gold !default;
 .reveal a {
   line-height: 1.3em;
   text-decoration: none;
-  border-bottom: 1px dotted $primary-gold;
+  border-bottom: 1px dotted $warm-accent;
   transition: border-color 0.2s ease;
 
   &:hover {
@@ -99,7 +99,7 @@ $selection-bg: $primary-gold !default;
   }
 
   .subtitle {
-    color: $primary-gold;
+    color: $warm-accent;
     font-style: italic;
     margin-top: 0.3em;
     margin-bottom: 1.2em;
@@ -126,7 +126,7 @@ $selection-bg: $primary-gold !default;
 
   .date,
   .quarto-title-meta-contents {
-    color: $primary-gold;
+    color: $crest-blue;
     font-weight: 600;
     margin-top: 1.5em;
     font-size: 1.1em;
@@ -153,11 +153,11 @@ $selection-bg: $primary-gold !default;
   font-size: 1.5em;
   margin-bottom: 0.7em;
   padding-bottom: 0.2em;
-  border-bottom: 2px solid rgba($primary-gold, 0.3);
+  border-bottom: 2px solid rgba($warm-accent, 0.3);
 }
 
 .reveal h3 {
-  color: $primary-gold;
+  color: $crest-blue;
   font-style: italic;
   font-weight: 500;
   font-size: 1em;
@@ -166,7 +166,7 @@ $selection-bg: $primary-gold !default;
 }
 
 .reveal h4 {
-  color: $highlight-yellow;
+  color: $accent-blue;
   font-weight: 600;
   font-size: 0.95em;
   margin-top: 0.8em;
@@ -177,12 +177,12 @@ $selection-bg: $primary-gold !default;
 // COLOR UTILITY CLASSES
 // ==============================================================================
 
-.alert { color: $primary-gold; }
+.alert { color: $warm-accent; }
 
-// Customize these class names for your institution:
-.emoryblue { color: $primary-blue; }
-.emorygold { color: $primary-gold; }
-.emoryyellow { color: $highlight-yellow; }
+// IP Paris institutional colors
+.ippblue { color: $primary-blue; }
+.ippaccent { color: $crest-blue; }
+.ipphighlight { color: $accent-blue; }
 
 // Semantic colors for diagrams and annotations
 .positive {
@@ -201,11 +201,11 @@ $selection-bg: $primary-gold !default;
 
 // Highlight classes
 .hi { font-weight: 600; color: $primary-blue !important; }
-.hi-gold { font-weight: 600; color: $primary-gold !important; }
-.hi-yellow { font-weight: 600; color: $highlight-yellow !important; }
+.hi-crest { font-weight: 600; color: $crest-blue !important; }
+.hi-accent { font-weight: 600; color: $accent-blue !important; }
 .hi-slate { font-weight: 600; color: #314f4f !important; }
 .hi-green { font-weight: 600; color: #2E8B57 !important; }
-.hi-red { font-weight: 600; color: #C41E3A !important; }
+.hi-red { font-weight: 600; color: $warm-accent !important; }
 
 .fg { color: var(--col, $jet); }
 .bg {
@@ -251,7 +251,7 @@ $selection-bg: $primary-gold !default;
 
   li:before {
     content: $right-arrow;
-    color: $primary-gold;
+    color: $crest-blue;
     position: absolute;
     left: -1.1em;
     font-size: 0.9em;
@@ -271,7 +271,7 @@ $selection-bg: $primary-gold !default;
   }
 
   li::marker {
-    color: $highlight-yellow;
+    color: $accent-blue;
     font-weight: 700;
   }
 }
@@ -281,8 +281,8 @@ $selection-bg: $primary-gold !default;
 // ==============================================================================
 
 .keybox {
-  background-color: rgba($primary-gold, 0.12);
-  border-left: 4px solid $primary-gold;
+  background-color: rgba($warm-accent, 0.10);
+  border-left: 4px solid $warm-accent;
   padding: 0.8em 1.2em;
   margin: 1.2em 0;
   border-radius: 6px;
@@ -291,8 +291,8 @@ $selection-bg: $primary-gold !default;
 }
 
 .highlightbox {
-  background-color: rgba($highlight-yellow, 0.08);
-  border-left: 4px solid $highlight-yellow;
+  background-color: rgba($accent-blue, 0.08);
+  border-left: 4px solid $accent-blue;
   padding: 0.8em 1.2em;
   margin: 1.2em 0;
   border-radius: 6px;
@@ -311,8 +311,8 @@ $selection-bg: $primary-gold !default;
 }
 
 .assumptionbox {
-  background-color: rgba($primary-gold, 0.08);
-  border: 2px solid $primary-gold;
+  background-color: rgba($crest-blue, 0.06);
+  border: 2px solid $crest-blue;
   padding: 0.8em 1.2em;
   margin: 1.2em 0;
   border-radius: 6px;
@@ -321,8 +321,8 @@ $selection-bg: $primary-gold !default;
 }
 
 .quotebox {
-  background-color: rgba($primary-gold, 0.08);
-  border-left: 4px solid darken($primary-gold, 10%);
+  background-color: rgba($crest-blue, 0.06);
+  border-left: 4px solid darken($crest-blue, 10%);
   padding: 0.8em 1.2em 0.8em 1.8em;
   margin: 1em 0;
   border-radius: 0 6px 6px 0;
@@ -333,7 +333,7 @@ $selection-bg: $primary-gold !default;
   &::before {
     content: "\201C";
     font-size: 2.5em;
-    color: rgba($primary-gold, 0.4);
+    color: rgba($crest-blue, 0.4);
     position: absolute;
     left: 0.15em;
     top: -0.1em;
@@ -343,8 +343,8 @@ $selection-bg: $primary-gold !default;
 }
 
 .resultbox {
-  background-color: rgba($primary-gold, 0.15);
-  border: 2px solid $primary-gold;
+  background-color: rgba($warm-accent, 0.10);
+  border: 2px solid $warm-accent;
   padding: 0.8em 1.2em;
   margin: 1.2em 0;
   border-radius: 6px;
@@ -361,7 +361,7 @@ $selection-bg: $primary-gold !default;
 }
 
 .softbox {
-  background-color: rgba($primary-gold, 0.06);
+  background-color: rgba($crest-blue, 0.06);
   padding: 0.6em 1.2em;
   margin: 0.8em 0;
   border-radius: 0;
@@ -579,7 +579,7 @@ $selection-bg: $primary-gold !default;
 
 .reveal blockquote {
   background-color: rgba($primary-blue, 0.04);
-  border-left: 4px solid $primary-gold;
+  border-left: 4px solid $crest-blue;
   padding: 1em 1.5em;
   margin: 1em 0;
   border-radius: 0 6px 6px 0;
@@ -647,6 +647,6 @@ $selection-bg: $primary-gold !default;
 
 .reveal a:focus,
 .reveal button:focus {
-  outline: 2px solid $primary-gold;
+  outline: 2px solid $warm-accent;
   outline-offset: 2px;
 }

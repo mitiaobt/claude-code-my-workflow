@@ -1,0 +1,243 @@
+% ==============================================================================
+% Beamer Preamble — Introduction to Econometrics
+% CREST, Institut Polytechnique de Paris
+% ==============================================================================
+
+% --- Document Class ---
+% (loaded by each lecture file: \documentclass[aspectratio=169,12pt]{beamer})
+
+% --- Theme ---
+\usetheme{Madrid}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Slide numbers in footer
+\setbeamertemplate{footline}{%
+  \hfill\insertframenumber/\inserttotalframenumber\hspace{0.5em}\vspace{0.5em}%
+}
+
+% ==============================================================================
+% COLOR DEFINITIONS — IP Paris / CREST Palette
+% ==============================================================================
+
+\usepackage{xcolor}
+
+\definecolor{ippblue}{HTML}{233E5C}       % IP Paris primary dark blue
+\definecolor{crestblue}{HTML}{144563}      % CREST blue
+\definecolor{accentblue}{HTML}{018BD3}     % IP Paris vibrant blue
+\definecolor{lightblue}{HTML}{61ABF6}      % Light blue
+\definecolor{darknavy}{HTML}{011A29}       % CREST dark navy
+\definecolor{warmaccent}{HTML}{C0392B}     % Red accent for emphasis
+
+% Semantic aliases
+\definecolor{positive}{HTML}{15803D}       % Green — good/identified
+\definecolor{negative}{HTML}{B91C1C}       % Red — bad/problematic
+\definecolor{muted}{HTML}{525252}          % Gray — reference/context
+
+% Apply to Beamer elements
+\setbeamercolor{structure}{fg=ippblue}
+\setbeamercolor{title}{fg=ippblue}
+\setbeamercolor{frametitle}{fg=ippblue,bg=white}
+\setbeamercolor{title in head/foot}{fg=white,bg=ippblue}
+\setbeamercolor{author in head/foot}{fg=white,bg=crestblue}
+\setbeamercolor{date in head/foot}{fg=white,bg=accentblue}
+\setbeamercolor{item}{fg=ippblue}
+\setbeamercolor{subitem}{fg=crestblue}
+\setbeamercolor{block title}{fg=white,bg=ippblue}
+\setbeamercolor{block body}{bg=ippblue!5}
+\setbeamercolor{block title alerted}{fg=white,bg=warmaccent}
+\setbeamercolor{block body alerted}{bg=warmaccent!5}
+\setbeamercolor{block title example}{fg=white,bg=positive}
+\setbeamercolor{block body example}{bg=positive!5}
+
+% ==============================================================================
+% FONTS (XeLaTeX)
+% ==============================================================================
+
+\usepackage{fontspec}
+\setsansfont{Source Sans Pro}[
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+  Scale = 1.0
+]
+
+% ==============================================================================
+% MATH PACKAGES
+% ==============================================================================
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+
+% ==============================================================================
+% MATH OPERATORS (Econometrics)
+% ==============================================================================
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Corr}{Corr}
+\DeclareMathOperator{\plim}{plim}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\iid}{\overset{\text{iid}}{\sim}}
+\newcommand{\convd}{\xrightarrow{d}}
+\newcommand{\convp}{\xrightarrow{p}}
+\newcommand{\convas}{\xrightarrow{a.s.}}
+
+% ==============================================================================
+% OTHER PACKAGES
+% ==============================================================================
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=ippblue,
+  urlcolor=accentblue,
+  citecolor=crestblue
+}
+
+% Bibliography
+\usepackage[round,authoryear]{natbib}
+
+% ==============================================================================
+% TEXT COMMANDS
+% ==============================================================================
+
+\newcommand{\key}[1]{\textcolor{warmaccent}{\textbf{#1}}}
+\newcommand{\highlight}[1]{\textcolor{accentblue}{#1}}
+\newcommand{\mutedtext}[1]{\textcolor{muted}{#1}}
+
+% tcolorbox is required for custom environments
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% ==============================================================================
+% CUSTOM ENVIRONMENTS
+% ==============================================================================
+
+% --- keybox: Red accent background for key takeaways ---
+\newenvironment{keybox}{%
+  \begin{tcolorbox}[
+    colback=warmaccent!8,
+    colframe=warmaccent,
+    leftrule=4pt,
+    rightrule=0pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- highlightbox: Light blue left-accent for highlights ---
+\newenvironment{highlightbox}{%
+  \begin{tcolorbox}[
+    colback=accentblue!6,
+    colframe=accentblue,
+    leftrule=4pt,
+    rightrule=0pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- methodbox: Dark blue left-accent for methods ---
+\newenvironment{methodbox}{%
+  \begin{tcolorbox}[
+    colback=ippblue!5,
+    colframe=ippblue,
+    leftrule=4pt,
+    rightrule=0pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- assumptionbox: Blue-bordered box for formal assumptions ---
+\newenvironment{assumptionbox}{%
+  \begin{tcolorbox}[
+    colback=crestblue!4,
+    colframe=crestblue,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- definitionbox[Title]: Blue-bordered titled box ---
+\newenvironment{definitionbox}[1][Definition]{%
+  \begin{tcolorbox}[
+    title=#1,
+    colback=crestblue!4,
+    colframe=crestblue,
+    coltitle=white,
+    fonttitle=\bfseries,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- resultbox: Bold-bordered result box for theorems/propositions ---
+\newenvironment{resultbox}{%
+  \begin{tcolorbox}[
+    colback=warmaccent!6,
+    colframe=warmaccent,
+    boxrule=2pt,
+    arc=4pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}
+
+% --- eqbox: Subtle blue background for featured equations ---
+\newenvironment{eqbox}{%
+  \begin{tcolorbox}[
+    colback=ippblue!3,
+    colframe=ippblue!3,
+    boxrule=0pt,
+    arc=0pt,
+    boxsep=4pt,
+    left=8pt,
+    right=8pt
+  ]%
+}{%
+  \end{tcolorbox}%
+}

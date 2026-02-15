@@ -1,12 +1,7 @@
 # CLAUDE.MD -- Academic Project Development with Claude Code
 
-<!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
-     Customize Beamer environments and CSS classes for your theme.
-     Keep this file under ~150 lines — Claude loads it every session.
-     See the guide at docs/workflow-guide.html for full documentation. -->
-
-**Project:** [YOUR PROJECT NAME]
-**Institution:** [YOUR INSTITUTION]
+**Project:** Introduction to Econometrics
+**Institution:** CREST, Institut Polytechnique de Paris
 **Branch:** main
 
 ---
@@ -24,12 +19,12 @@
 ## Folder Structure
 
 ```
-[YOUR-PROJECT]/
+intro-econometrics/
 ├── CLAUDE.MD                    # This file
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib        # Centralized bibliography
 ├── Figures/                     # Figures and images
-├── Preambles/header.tex         # LaTeX headers
+├── Preambles/header.tex         # LaTeX headers (IP Paris theme)
 ├── Slides/                      # Beamer .tex files
 ├── Quarto/                      # RevealJS .qmd files + theme
 ├── docs/                        # GitHub Pages (auto-generated)
@@ -96,32 +91,37 @@ python scripts/quality_score.py Quarto/file.qmd
 
 ---
 
-<!-- CUSTOMIZE: Replace the example entries below with your own
-     Beamer environments and Quarto CSS classes. These are examples
-     from the original project — delete them and add yours. -->
-
 ## Beamer Custom Environments
 
-| Environment       | Effect        | Use Case       |
-|-------------------|---------------|----------------|
-| `[your-env]`      | [Description] | [When to use]  |
-
-<!-- Example entries (delete and replace with yours):
-| `keybox` | Gold background box | Key points |
-| `highlightbox` | Gold left-accent box | Highlights |
+| Environment | Effect | Use Case |
+|---|---|---|
+| `keybox` | Red accent background box | Key takeaways and important results |
+| `highlightbox` | Light blue left-accent box | Highlighted points and remarks |
+| `methodbox` | Dark blue left-accent box | Estimation methods and procedures |
+| `assumptionbox` | Blue-bordered titled box | Formal assumptions (e.g., OLS, IV) |
 | `definitionbox[Title]` | Blue-bordered titled box | Formal definitions |
--->
+| `resultbox` | Bold-bordered result box | Theorems, propositions, key results |
+| `eqbox` | Subtle blue background | Featured equations |
 
 ## Quarto CSS Classes
 
-| Class              | Effect        | Use Case       |
-|--------------------|---------------|----------------|
-| `[.your-class]`    | [Description] | [When to use]  |
-
-<!-- Example entries (delete and replace with yours):
+| Class | Effect | Use Case |
+|---|---|---|
 | `.smaller` | 85% font | Dense content slides |
-| `.positive` | Green bold | Good annotations |
--->
+| `.smallest` | 80% font | Very dense reference slides |
+| `.ippblue` | IP Paris dark blue text | Institutional color emphasis |
+| `.ippaccent` | CREST blue text | Secondary emphasis |
+| `.ipphighlight` | Vibrant blue text | Highlights and alerts |
+| `.positive` | Green bold | Good/identified annotations |
+| `.negative` | Red bold | Bad/problematic annotations |
+| `.hi` | Bold primary blue | Inline emphasis |
+| `.hi-red` | Bold red | Inline warning emphasis |
+| `.keybox` | Red accent background box | Key takeaways |
+| `.highlightbox` | Light blue left-accent box | Highlights |
+| `.methodbox` | Dark blue left-accent box | Methods |
+| `.assumptionbox` | Blue-bordered box | Assumptions |
+| `.resultbox` | Bold-bordered box | Results |
+| `.eqbox` | Subtle blue background | Equations |
 
 ---
 
@@ -129,5 +129,16 @@ python scripts/quality_score.py Quarto/file.qmd
 
 | Lecture | Beamer | Quarto | Key Content |
 |---------|--------|--------|-------------|
-| 1: [Topic] | `Lecture01_Topic.tex` | `Lecture1_Topic.qmd` | [Brief description] |
-| 2: [Topic] | `Lecture02_Topic.tex` | -- | [Brief description] |
+| 1: Intro & Probability Review | `Lecture01_Intro.tex` | -- | Course overview, probability review, statistical inference |
+| 2: Simple Regression | `Lecture02_SimpleRegression.tex` | -- | OLS derivation, properties, interpretation |
+| 3: Multiple Regression: Estimation | `Lecture03_MultipleRegression.tex` | -- | Matrix notation, OLS in matrix form, R-squared |
+| 4: Multiple Regression: Inference | `Lecture04_Inference.tex` | -- | t-tests, F-tests, confidence intervals |
+| 5: Asymptotics for OLS | `Lecture05_Asymptotics.tex` | -- | Consistency, asymptotic normality, LLN/CLT |
+| 6: Heteroskedasticity | `Lecture06_Heteroskedasticity.tex` | -- | Consequences, detection, robust SE, WLS/GLS |
+| 7: Specification & Functional Form | `Lecture07_Specification.tex` | -- | Omitted variables, measurement error, functional form |
+| 8: Instrumental Variables | `Lecture08_IV.tex` | -- | Endogeneity, 2SLS, IV assumptions, weak instruments |
+| 9: Simultaneous Equations | `Lecture09_SimultaneousEq.tex` | -- | Supply-demand, identification, estimation |
+| 10: Panel Data | `Lecture10_PanelData.tex` | -- | FE, RE, first differencing, Hausman test |
+| 11: Binary Response Models | `Lecture11_BinaryResponse.tex` | -- | Probit, logit, marginal effects |
+| 12: Time Series Basics | `Lecture12_TimeSeries.tex` | -- | Stationarity, AR/MA, spurious regression |
+| 13: Advanced Topics / Review | `Lecture13_Advanced.tex` | -- | Selected topics, course synthesis |

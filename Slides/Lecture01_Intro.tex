@@ -1,0 +1,923 @@
+% ==============================================================================
+% Lecture 1 — Introduction & Review of Probability/Statistics
+% Introduction to Econometrics
+% CREST, Institut Polytechnique de Paris
+% ==============================================================================
+
+\documentclass[aspectratio=169,12pt]{beamer}
+\input{header}
+
+% --- Metadata ---
+\title[Intro to Econometrics]{Econometrics}
+\subtitle{Lecture 1: Introduction}
+\author{CREST, Institut Polytechnique de Paris}
+\date{Spring 2026}
+
+\begin{document}
+
+% ==============================================================================
+% PART I: COURSE OVERVIEW
+% ==============================================================================
+
+% --- Slide 1: Title ---
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% --- Slide 2: About the Course ---
+\begin{frame}{About This Course}
+  \textbf{Logistics}
+  \begin{itemize}
+    \item 13 lectures, 1.5 hours each
+    \item Office hours: TBA
+    \item Course website: TBA
+  \end{itemize}
+
+  \vspace{1em}
+  \textbf{Prerequisites}
+  \begin{itemize}
+    \item Probability and statistics (L3 level)
+    \item Linear algebra (matrix operations)
+    \item Calculus (optimization, integration)
+  \end{itemize}
+\end{frame}
+
+% --- Slide 3: Course Objectives ---
+\begin{frame}{What You Will Learn}
+  By the end of this course, you will be able to:
+  \begin{enumerate}
+    \item \textbf{Formulate} econometric models for causal questions
+    \item \textbf{Estimate} parameters using OLS, IV, and panel methods
+    \item \textbf{Evaluate} assumptions and diagnose violations
+    \item \textbf{Interpret} results with statistical and economic rigor
+    \item \textbf{Implement} analyses in R with real data
+  \end{enumerate}
+\end{frame}
+
+% --- Slide 4: Course Roadmap ---
+\begin{frame}{Course Roadmap}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Foundations}
+      \begin{enumerate}
+        \item \key{Introduction \& Probability Review}
+        \item Simple Regression
+        \item Multiple Regression: Estimation
+        \item Multiple Regression: Inference
+        \item Asymptotics for OLS
+      \end{enumerate}
+
+      \vspace{0.5em}
+      \textbf{Diagnostics}
+      \begin{enumerate}\setcounter{enumi}{5}
+        \item Heteroskedasticity
+        \item Specification \& Functional Form
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Advanced Methods}
+      \begin{enumerate}\setcounter{enumi}{7}
+        \item Instrumental Variables
+        \item Simultaneous Equations
+        \item Panel Data
+        \item Binary Response Models
+      \end{enumerate}
+
+      \vspace{0.5em}
+      \textbf{Extensions}
+      \begin{enumerate}\setcounter{enumi}{11}
+        \item Time Series Basics
+        \item Advanced Topics \& Review
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- Slide 5: Textbooks and Resources ---
+\begin{frame}{Textbooks and Resources}
+  \textbf{Primary textbook}
+  \begin{itemize}
+    \item \citet{Wooldridge2019_introductory} --- comprehensive, example-driven
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Complementary reading}
+  \begin{itemize}
+    \item \citet{Angrist2009_mostly_harmless} --- causal inference perspective
+    \item \citet{StockWatson2020_econometrics} --- accessible alternative
+    \item \citet{Hansen2022_econometrics} --- advanced/graduate reference
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Software}
+  \begin{itemize}
+    \item R (with RStudio) --- introduced from Lecture~2 onward
+  \end{itemize}
+\end{frame}
+
+% --- Slide 6: Assessment ---
+\begin{frame}{Assessment}
+  \begin{center}
+    \begin{tabular}{lc}
+      \toprule
+      \textbf{Component} & \textbf{Weight} \\
+      \midrule
+      Problem sets (4--5)  & 30\% \\
+      Midterm exam         & 30\% \\
+      Final exam           & 40\% \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{1em}
+  \begin{highlightbox}
+    Problem sets combine analytical derivations with R-based empirical exercises.
+    Collaboration is encouraged; write-ups must be individual.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 7: Why Econometrics? ---
+\begin{frame}{Why Econometrics?}
+  \textbf{The fundamental problem:} economic data are \key{observational}, not experimental.
+
+  \vspace{1em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Correlation}
+      \begin{itemize}
+        \item People with more education earn more
+        \item Countries with more police have more crime
+        \item Hospital patients are sicker than average
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Causation?}
+      \begin{itemize}
+        \item Does education \emph{cause} higher earnings?
+        \item Do police \emph{cause} crime?
+        \item Do hospitals \emph{make} people sick?
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \vspace{1em}
+  \begin{keybox}
+    Econometrics provides the tools to move from correlation to causal statements
+    --- under clearly stated assumptions.
+  \end{keybox}
+\end{frame}
+
+% --- Slide 8: Motivating Example ---
+\begin{frame}{Motivating Example: Returns to Education}
+  The \key{Mincer wage equation} \citep{Mincer1974_schooling}:
+  \begin{eqbox}
+    \[
+      \ln(\text{wage}_i) = \beta_0 + \beta_1 \, \text{educ}_i
+        + \beta_2 \, \text{exper}_i + \beta_3 \, \text{exper}_i^2 + u_i
+    \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Key questions:}
+  \begin{itemize}
+    \item What does $\beta_1$ measure? Under what conditions is it \emph{causal}?
+    \item What problems arise if ability is omitted?
+    \item How do we estimate, test, and interpret $\beta_1$?
+  \end{itemize}
+
+  \vspace{0.5em}
+  \mutedtext{We will return to this example throughout the course. By Lecture~8 (IV), you will have multiple strategies to estimate the causal return to education.}
+\end{frame}
+
+% ==============================================================================
+% PART II: PROBABILITY REVIEW
+% ==============================================================================
+
+{
+\setbeamercolor{background canvas}{bg=ippblue}
+\setbeamercolor{normal text}{fg=white}
+\usebeamercolor[fg]{normal text}
+\begin{frame}[plain,c]
+  \centering
+  {\Large\textbf{Part II}}\\[0.5em]
+  {\LARGE\textbf{Review of Probability}}\\[1em]
+  {\textcolor{white!70}{Wooldridge, Appendix B}}
+\end{frame}
+}
+
+% --- Slide 10: Random Variables ---
+\begin{frame}{Random Variables}
+  \begin{definitionbox}[Random Variable]
+    A \textbf{random variable} $X$ is a function from a sample space $\Omega$ to $\mathbb{R}$:
+    \[ X : \Omega \to \mathbb{R} \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Discrete} $X$
+      \begin{itemize}
+        \item Takes countably many values
+        \item Characterized by its \textbf{probability mass function} (PMF):
+        \[ f(x) = P(X = x) \]
+        \item Example: number of children
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Continuous} $X$
+      \begin{itemize}
+        \item Takes uncountably many values
+        \item Characterized by its \textbf{probability density function} (PDF):
+        \[ f(x) \geq 0, \quad \int_{-\infty}^{\infty} f(x)\,dx = 1 \]
+        \item Example: hourly wage
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- Slide 11: CDF ---
+\begin{frame}{Cumulative Distribution Function}
+  \begin{definitionbox}[Cumulative Distribution Function (CDF)]
+    The \textbf{cumulative distribution function} of $X$ is:
+    \[ F(x) = P(X \leq x) \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Properties:}
+  \begin{enumerate}
+    \item $\lim_{x \to -\infty} F(x) = 0$ and $\lim_{x \to \infty} F(x) = 1$
+    \item $F$ is non-decreasing
+    \item $F$ is right-continuous
+    \item $P(a < X \leq b) = F(b) - F(a)$
+  \end{enumerate}
+
+  \vspace{0.5em}
+  For continuous $X$: \quad $f(x) = F'(x)$ \quad and \quad $F(x) = \int_{-\infty}^{x} f(t)\,dt$
+\end{frame}
+
+% --- Slide 12: Expected Value ---
+\begin{frame}{Expected Value}
+  \begin{definitionbox}[Expected Value]
+    \textbf{Discrete:} \quad $\E[X] = \sum_x x \cdot f(x)$
+
+    \textbf{Continuous:} \quad $\E[X] = \int_{-\infty}^{\infty} x \, f(x) \, dx$
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Linearity of expectation:}
+  \begin{eqbox}
+    \begin{align*}
+      \E[aX + b] &= a\,\E[X] + b \\
+      \E[X + Y]  &= \E[X] + \E[Y] \quad \text{(always, even if dependent)}
+    \end{align*}
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{For a function $g(X)$:} \quad $\E[g(X)] = \int g(x) \, f(x) \, dx$
+\end{frame}
+
+% --- Slide 13: Variance and Standard Deviation ---
+\begin{frame}{Variance and Standard Deviation}
+  \begin{definitionbox}[Variance]
+    \[ \Var(X) = \E\big[(X - \E[X])^2\big] = \E[X^2] - \big(\E[X]\big)^2 \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  The \textbf{standard deviation} is $\text{sd}(X) = \sqrt{\Var(X)}$.
+
+  \vspace{0.5em}
+  \textbf{Properties:}
+  \begin{itemize}
+    \item $\Var(X) \geq 0$, with equality iff $X$ is constant a.s.
+    \item $\Var(aX + b) = a^2 \Var(X)$
+    \item $\Var(X + Y) = \Var(X) + \Var(Y) + 2\Cov(X,Y)$
+  \end{itemize}
+\end{frame}
+
+% --- Slide 14: Covariance and Correlation ---
+\begin{frame}{Covariance and Correlation}
+  \begin{definitionbox}[Covariance and Correlation]
+    \[ \Cov(X,Y) = \E\big[(X - \E[X])(Y - \E[Y])\big] = \E[XY] - \E[X]\E[Y] \]
+    \[ \Corr(X,Y) = \frac{\Cov(X,Y)}{\text{sd}(X)\,\text{sd}(Y)} \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Key facts:}
+  \begin{itemize}
+    \item $-1 \leq \Corr(X,Y) \leq 1$
+    \item $\Corr(X,Y) = 0$ means \textbf{uncorrelated} (not necessarily independent)
+    \item $\Cov(X,X) = \Var(X)$
+    \item $\Cov(aX + b, \, cY + d) = ac \, \Cov(X,Y)$
+  \end{itemize}
+\end{frame}
+
+% --- Slide 15: Key Formulas ---
+\begin{frame}{Key Properties of $\E$ and $\Var$}
+  \begin{eqbox}
+    \textbf{Expected value:}
+    \vspace{-0.3em}
+    \begin{align*}
+      \E[aX + bY + c] &= a\,\E[X] + b\,\E[Y] + c \\
+      \E\bigg[\sum_{i=1}^n X_i\bigg] &= \sum_{i=1}^n \E[X_i]
+    \end{align*}
+    \vspace{-0.5em}
+
+    \textbf{Variance:}
+    \vspace{-0.3em}
+    \begin{align*}
+      \Var(aX + b) &= a^2 \Var(X) \\
+      \Var(X + Y)  &= \Var(X) + \Var(Y) + 2\Cov(X,Y)
+    \end{align*}
+  \end{eqbox}
+  \vspace{-0.3em}
+
+  If $X_i$ \textbf{uncorrelated}: \;
+  $\Var\!\big(\sum_{i} X_i\big) = \sum_{i} \Var(X_i)$; \;
+  otherwise add $2\sum_{i<j}\Cov(X_i, X_j)$.
+\end{frame}
+
+% --- Slide 16: Joint Distributions ---
+\begin{frame}{Joint, Marginal, and Conditional Distributions}
+  \textbf{Joint PDF/PMF:} $f_{X,Y}(x,y)$ describes the simultaneous behavior of $X$ and $Y$.
+
+  \vspace{0.5em}
+  \textbf{Marginal distribution:}
+  \[ f_X(x) = \int_{-\infty}^{\infty} f_{X,Y}(x,y) \, dy \]
+
+  \vspace{0.5em}
+  \textbf{Conditional distribution:}
+  \[ f_{Y|X}(y \mid x) = \frac{f_{X,Y}(x,y)}{f_X(x)}, \quad f_X(x) > 0 \]
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    The conditional distribution $f_{Y|X}$ is the foundation of regression analysis:
+    it describes how $Y$ behaves \emph{given} a particular value of $X$.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 17: Conditional Expectation ---
+\begin{frame}{Conditional Expectation}
+  \begin{definitionbox}[Conditional Expectation]
+    \[ \E[Y \mid X = x] = \int y \, f_{Y|X}(y \mid x) \, dy \]
+    The \textbf{conditional expectation function} (CEF) is the map $x \mapsto \E[Y \mid X = x]$.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Why it matters for econometrics:}
+  \begin{itemize}
+    \item The regression function $\E[Y \mid X]$ is the \key{best predictor} of $Y$ given $X$
+    \item It minimizes the mean squared prediction error (assuming $\E[Y^2] < \infty$):
+    \[ \E[Y \mid X] = \arg\min_{g(X)} \E\big[(Y - g(X))^2\big] \]
+    \item OLS approximates the CEF with a linear function
+  \end{itemize}
+\end{frame}
+
+% --- Slide 18: Law of Iterated Expectations ---
+\begin{frame}{Law of Iterated Expectations (LIE)}
+  \begin{resultbox}
+    \textbf{Law of Iterated Expectations:}
+    \[ \E[Y] = \E\big[\E[Y \mid X]\big] \]
+    The unconditional mean of $Y$ is the average of conditional means, weighted by $f_X$.
+  \end{resultbox}
+
+  \vspace{0.5em}
+  \textbf{Why this matters:}
+  \begin{itemize}
+    \item Allows us to decompose expectations by conditioning
+    \item Key tool in proving properties of OLS estimators
+    \item Used repeatedly in deriving unbiasedness, omitted variable bias, IV results
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Example:} $\E[\text{wage}] = \E\big[\E[\text{wage} \mid \text{educ}]\big]$
+
+  The overall average wage is the average of education-specific average wages.
+\end{frame}
+
+% --- Slide 19: Conditional Variance and Law of Total Variance ---
+\begin{frame}{Conditional Variance}
+  \begin{definitionbox}[Conditional Variance]
+    \[ \Var(Y \mid X) = \E\big[(Y - \E[Y \mid X])^2 \mid X\big] = \E[Y^2 \mid X] - \big(\E[Y \mid X]\big)^2 \]
+  \end{definitionbox}
+
+  \begin{resultbox}
+    \textbf{Law of Total Variance:}
+    \[ \Var(Y) = \underbrace{\E\big[\Var(Y \mid X)\big]}_{\text{within-group}} + \underbrace{\Var\big(\E[Y \mid X]\big)}_{\text{between-group}} \]
+  \end{resultbox}
+
+  Total variance decomposes into average \emph{within-group} variance plus variance of \emph{group means}.
+\end{frame}
+
+% --- Slide 20: Independence ---
+\begin{frame}{Independence}
+  \begin{definitionbox}[Independence]
+    $X$ and $Y$ are \textbf{independent} ($X \indep Y$) if and only if:
+    \[ f_{X,Y}(x,y) = f_X(x) \cdot f_Y(y) \quad \text{for all } x, y \]
+  \end{definitionbox}
+
+  \textbf{Implications of independence:}
+  \begin{itemize}
+    \item $\E[XY] = \E[X]\E[Y]$ \; $\Longrightarrow$ \; $\Cov(X,Y) = 0$
+    \item $\E[g(X)h(Y)] = \E[g(X)]\E[h(Y)]$
+    \item $\Var(X + Y) = \Var(X) + \Var(Y)$
+  \end{itemize}
+
+  \begin{highlightbox}
+    \textbf{Warning:} Uncorrelated $\not\Rightarrow$ independent (unless jointly Normal).
+    Independence $\Rightarrow$ uncorrelated always holds.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 21: Common Distributions ---
+\begin{frame}{Common Distributions in Econometrics}
+  \begin{center}
+    \small
+    \begin{tabular}{llll}
+      \toprule
+      \textbf{Distribution} & \textbf{Notation} & \textbf{Mean} & \textbf{Variance} \\
+      \midrule
+      Normal     & $N(\mu, \sigma^2)$  & $\mu$       & $\sigma^2$ \\
+      Standard Normal & $N(0,1)$       & $0$         & $1$ \\
+      Chi-squared & $\chi^2_k$         & $k$         & $2k$ \\
+      Student's $t$ & $t_k$           & $0$ \, ($k>1$) & $\frac{k}{k-2}$ \, ($k>2$) \\
+      Fisher's $F$ & $F_{k_1,k_2}$    & $\frac{k_2}{k_2-2}$ \, ($k_2>2$)
+                                        & (complex) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  These distributions arise naturally in testing:
+  \begin{itemize}
+    \item $t$-distribution $\to$ individual coefficient tests
+    \item $F$-distribution $\to$ joint hypothesis tests
+    \item $\chi^2$-distribution $\to$ specification tests, MLE
+  \end{itemize}
+\end{frame}
+
+% --- Slide 22: The Normal Distribution ---
+\begin{frame}{The Normal Distribution}
+  If $X \sim N(\mu, \sigma^2)$, its PDF is:
+  \[ f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right) \]
+
+  \vspace{0.5em}
+  \textbf{Key properties:}
+  \begin{itemize}
+    \item \textbf{Standardization:} $Z = \frac{X - \mu}{\sigma} \sim N(0,1)$
+    \item \textbf{Linear combinations:} if $X \sim N(\mu_X, \sigma_X^2)$ and $Y \sim N(\mu_Y, \sigma_Y^2)$ are independent:
+      \[ aX + bY \sim N\!\big(a\mu_X + b\mu_Y, \; a^2\sigma_X^2 + b^2\sigma_Y^2\big) \]
+    \item \textbf{Symmetry:} $\Phi(-z) = 1 - \Phi(z)$, where $\Phi$ is the standard Normal CDF
+  \end{itemize}
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    Under classical assumptions, OLS estimators are \emph{exactly} Normal.
+    Under weaker assumptions, they are \emph{asymptotically} Normal (via CLT).
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 23: Chi-squared, t, and F Distributions ---
+\begin{frame}{Chi-Squared, $t$, and $F$ Distributions}
+  \textbf{Construction from Normal random variables:}
+
+  \vspace{0.5em}
+  \begin{eqbox}
+    \begin{enumerate}
+      \item If $Z_1, \ldots, Z_k \iid N(0,1)$, then $\sum_{i=1}^k Z_i^2 \sim \chi^2_k$
+
+      \item If $Z \sim N(0,1)$ and $V \sim \chi^2_k$ are independent, then
+        $\dfrac{Z}{\sqrt{V/k}} \sim t_k$
+
+      \item If $V_1 \sim \chi^2_{k_1}$ and $V_2 \sim \chi^2_{k_2}$ are independent, then
+        $\dfrac{V_1/k_1}{V_2/k_2} \sim F_{k_1,k_2}$
+    \end{enumerate}
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Key relationships:}
+  \begin{itemize}
+    \item $t_k^2 = F_{1,k}$ \quad (squaring a $t$ gives an $F$)
+    \item As $k \to \infty$: $t_k \to N(0,1)$ and $\chi^2_k / k \to 1$
+  \end{itemize}
+\end{frame}
+
+% --- Slide 24: Moment Generating Functions ---
+\begin{frame}{Moment Generating Functions}
+  \begin{definitionbox}[Moment Generating Function (MGF)]
+    The \textbf{moment generating function} of $X$ is:
+    \[ M_X(t) = \E[e^{tX}] \]
+    defined for $t$ in a neighborhood of zero.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Why useful:}
+  \begin{itemize}
+    \item Moments: $\E[X^k] = M_X^{(k)}(0)$
+    \item \textbf{Uniqueness:} if $M_X(t) = M_Y(t)$ in a neighborhood of $0$, then $X \overset{d}{=} Y$
+    \item \textbf{Sums of independents:} $M_{X+Y}(t) = M_X(t) \cdot M_Y(t)$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Example:} $X \sim N(\mu, \sigma^2)$ $\Rightarrow$ $M_X(t) = \exp\!\big(\mu t + \tfrac{1}{2}\sigma^2 t^2\big)$
+\end{frame}
+
+% --- Slide 25: Probability Results Summary ---
+\begin{frame}{Probability Review: Key Results}
+  \begin{resultbox}
+    \begin{enumerate}
+      \item $\E[aX + bY] = a\E[X] + b\E[Y]$ \hfill (always)
+      \item $\Var(aX + b) = a^2\Var(X)$
+      \item $\Cov(X,Y) = \E[XY] - \E[X]\E[Y]$
+      \item $X \indep Y \;\Rightarrow\; \Cov(X,Y) = 0$ \hfill (converse is false)
+      \item $\E[Y] = \E[\E[Y \mid X]]$ \hfill (LIE)
+      \item $\Var(Y) = \E[\Var(Y \mid X)] + \Var(\E[Y \mid X])$ \hfill (total variance)
+      \item $\E[Y \mid X] = \arg\min_{g(X)} \E[(Y - g(X))^2]$ \hfill (best predictor)
+    \end{enumerate}
+  \end{resultbox}
+
+  \vspace{0.5em}
+  \mutedtext{These results will be used repeatedly from Lecture~2 onward.}
+\end{frame}
+
+% ==============================================================================
+% PART III: STATISTICAL INFERENCE REVIEW
+% ==============================================================================
+
+{
+\setbeamercolor{background canvas}{bg=ippblue}
+\setbeamercolor{normal text}{fg=white}
+\usebeamercolor[fg]{normal text}
+\begin{frame}[plain,c]
+  \centering
+  {\Large\textbf{Part III}}\\[0.5em]
+  {\LARGE\textbf{Review of Statistical Inference}}\\[1em]
+  {\textcolor{white!70}{Wooldridge, Appendix C}}
+\end{frame}
+}
+
+% --- Slide 27: Random Sampling ---
+\begin{frame}{Random Sampling}
+  \begin{definitionbox}[Random Sample]
+    A \textbf{random sample} of size $n$ is a collection $\{X_1, X_2, \ldots, X_n\}$ of
+    \textbf{independent and identically distributed} (i.i.d.) random variables,
+    each with the same distribution as $X$.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{The i.i.d.\ assumption means:}
+  \begin{itemize}
+    \item \textbf{Identical:} each $X_i$ has the same distribution $F$
+    \item \textbf{Independent:} knowing $X_i$ tells you nothing about $X_j$ ($i \neq j$)
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{When does i.i.d.\ hold?}
+  \begin{itemize}
+    \item Cross-sectional surveys with random sampling: \highlight{typically yes}
+    \item Time series data: \highlight{typically no} (observations are dependent)
+    \item Panel data: \highlight{partially} (independent across $i$, dependent across $t$)
+  \end{itemize}
+\end{frame}
+
+% --- Slide 28: Estimators ---
+\begin{frame}{Estimators as Random Variables}
+  \begin{definitionbox}[Estimator]
+    An \textbf{estimator} $\hat{\theta}_n = g(X_1, \ldots, X_n)$ is a function of the sample.
+    Before the data are observed, $\hat{\theta}_n$ is a \textbf{random variable}.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Distinguish:}
+  \begin{itemize}
+    \item \textbf{Parameter} $\theta$: fixed, unknown quantity we want to learn
+    \item \textbf{Estimator} $\hat{\theta}_n$: random variable (depends on the sample)
+    \item \textbf{Estimate} $\hat{\theta}$: realized value from a specific sample
+  \end{itemize}
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    Because $\hat{\theta}_n$ is a random variable, it has a distribution --- the
+    \textbf{sampling distribution}. All of inference (bias, variance, testing)
+    is about this distribution.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 29: Unbiasedness ---
+\begin{frame}{Unbiasedness}
+  \begin{definitionbox}[Unbiasedness]
+    An estimator $\hat{\theta}_n$ is \textbf{unbiased} for $\theta$ if:
+    \[ \E[\hat{\theta}_n] = \theta \]
+    The \textbf{bias} is $\text{Bias}(\hat{\theta}_n) = \E[\hat{\theta}_n] - \theta$.
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Example:} Let $X_1, \ldots, X_n \iid (\mu, \sigma^2)$.
+  \begin{itemize}
+    \item $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$ is unbiased for $\mu$: \quad $\E[\bar{X}_n] = \mu$
+    \item $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X}_n)^2$ is unbiased for $\sigma^2$
+    \item $\tilde{S}^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X}_n)^2$ is \key{biased}: $\E[\tilde{S}^2] = \frac{n-1}{n}\sigma^2$
+  \end{itemize}
+\end{frame}
+
+% --- Slide 30: Efficiency ---
+\begin{frame}{Efficiency}
+  \begin{definitionbox}[Efficiency]
+    Among all unbiased estimators, $\hat{\theta}^*$ is \textbf{efficient} if it has the \textbf{smallest variance}:
+    \[ \Var(\hat{\theta}^*) \leq \Var(\hat{\theta}) \quad \text{for all unbiased } \hat{\theta} \]
+  \end{definitionbox}
+
+  \textbf{Mean squared error} combines bias and variance:
+  \begin{eqbox}
+    \[ \text{MSE}(\hat{\theta}_n) = \Var(\hat{\theta}_n) + \big[\text{Bias}(\hat{\theta}_n)\big]^2 \]
+  \end{eqbox}
+
+  \textbf{Bias--variance tradeoff:} a slightly biased estimator with much lower variance can have smaller MSE.
+
+  \mutedtext{Preview: the Gauss--Markov theorem (Lecture~3) establishes OLS as BLUE.}
+\end{frame}
+
+% --- Slide 31: Consistency ---
+\begin{frame}{Consistency}
+  \begin{definitionbox}[Consistency]
+    $\hat{\theta}_n$ is \textbf{consistent} for $\theta$ if
+    $\hat{\theta}_n \convp \theta$ as $n \to \infty$, i.e.,
+    $\lim_{n \to \infty} P(|\hat{\theta}_n - \theta| > \varepsilon) = 0$ for all $\varepsilon > 0$.
+  \end{definitionbox}
+
+  \textbf{Sufficient condition:} $\text{Bias}(\hat{\theta}_n) \to 0$ and $\Var(\hat{\theta}_n) \to 0$ as $n \to \infty$.
+
+  \vspace{0.5em}
+  \textbf{Consistency vs.\ unbiasedness:}
+  \begin{itemize}
+    \item Unbiasedness is a \emph{finite-sample} property (holds for all $n$)
+    \item Consistency is an \emph{asymptotic} property (requires $n \to \infty$)
+    \item Unbiased $\not\Rightarrow$ consistent; consistent $\not\Rightarrow$ unbiased
+  \end{itemize}
+\end{frame}
+
+% --- Slide 32: Law of Large Numbers ---
+\begin{frame}{Law of Large Numbers}
+  \begin{resultbox}
+    \textbf{Weak Law of Large Numbers (WLLN):}
+    If $X_1, \ldots, X_n$ are i.i.d.\ with $\E[X_i] = \mu$ and $\Var(X_i) < \infty$, then:
+    \[ \bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \convp \mu \]
+  \end{resultbox}
+
+  \vspace{0.5em}
+  \textbf{Intuition:} as the sample grows, the sample mean converges to the population mean.
+
+  \vspace{0.5em}
+  \textbf{Why it matters for econometrics:}
+  \begin{itemize}
+    \item Justifies using sample averages to estimate population quantities
+    \item Underpins consistency of OLS: $\hat{\beta} \convp \beta$
+    \item Foundation for the method of moments
+  \end{itemize}
+\end{frame}
+
+% --- Slide 33: Central Limit Theorem ---
+\begin{frame}{Central Limit Theorem}
+  \begin{resultbox}
+    \textbf{Central Limit Theorem (CLT):}
+    If $X_1, \ldots, X_n$ are i.i.d.\ with $\E[X_i] = \mu$ and $\Var(X_i) = \sigma^2 \in (0,\infty)$, then:
+    \[ \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \convd N(0,1) \]
+    Equivalently: \; $\sqrt{n}(\bar{X}_n - \mu) \convd N(0, \sigma^2)$
+  \end{resultbox}
+
+  \vspace{0.5em}
+  \textbf{The power of the CLT:}
+  \begin{itemize}
+    \item Works \emph{regardless} of the distribution of $X_i$
+    \item Convergence is often fast (usable for $n \geq 30$ in practice)
+    \item Justifies Normal-based inference even for non-Normal data
+  \end{itemize}
+\end{frame}
+
+% --- Slide 34: CLT Visual Intuition ---
+\begin{frame}{CLT: Visual Intuition}
+  \textbf{What happens as $n$ grows?} Consider sampling from a skewed distribution (e.g., exponential):
+
+  \vspace{0.3em}
+  \begin{center}
+    \begin{tabular}{cl}
+      \toprule
+      \textbf{Sample size} & \textbf{Distribution of $\bar{X}_n$} \\
+      \midrule
+      $n = 1$ & Same as original (skewed) \\
+      $n = 5$ & Less skewed, more concentrated \\
+      $n = 30$ & Approximately Normal \\
+      $n = 100$ & Very close to Normal, tightly concentrated \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \begin{highlightbox}
+    $\bar{X}_n$ is approximately Normal for large $n$, no matter how non-Normal the population.
+    This is why we can use $t$-tests and confidence intervals without assuming Normality.
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 35: Sample Mean and Variance ---
+\begin{frame}{Properties of the Sample Mean and Variance}
+  Let $X_1, \ldots, X_n \iid (\mu, \sigma^2)$.
+
+  \vspace{0.5em}
+  \textbf{Sample mean:} $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$
+  \begin{eqbox}
+    \[ \E[\bar{X}_n] = \mu, \qquad \Var(\bar{X}_n) = \frac{\sigma^2}{n} \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Sample variance:} $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X}_n)^2$
+  \begin{itemize}
+    \item $\E[S^2] = \sigma^2$ \quad (unbiased)
+    \item The $n-1$ denominator corrects for using $\bar{X}_n$ instead of $\mu$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Standard error of the mean:}
+  \[ \text{SE}(\bar{X}_n) = \frac{S}{\sqrt{n}} \]
+\end{frame}
+
+% --- Slide 36: Confidence Intervals ---
+\begin{frame}{Confidence Intervals}
+  \begin{definitionbox}[Confidence Interval]
+    A \textbf{$100(1-\alpha)\%$ CI} for $\theta$ is a random interval
+    $[\hat{\theta}_L, \hat{\theta}_U]$ s.t.\ $P(\hat{\theta}_L \leq \theta \leq \hat{\theta}_U) = 1 - \alpha$.
+  \end{definitionbox}
+
+  \textbf{For the mean} (large $n$ or Normal population):
+  \begin{eqbox}
+    \[ \bar{X}_n \pm t_{n-1,\,\alpha/2} \cdot \frac{S}{\sqrt{n}} \]
+  \end{eqbox}
+
+  \textbf{Interpretation:}
+  \begin{itemize}
+    \item \textcolor{positive}{\textbf{Correct:}} if we repeated sampling many times, $100(1-\alpha)\%$ of intervals would contain $\theta$
+    \item \textcolor{negative}{\textbf{Wrong:}} ``there is a $95\%$ probability that $\theta$ is in this interval'' --- $\theta$ is fixed; the interval is random
+  \end{itemize}
+\end{frame}
+
+% --- Slide 37: Hypothesis Testing ---
+\begin{frame}{Hypothesis Testing}
+  \textbf{Setup:}
+  \begin{itemize}
+    \item \textbf{Null hypothesis} $H_0$: a specific claim about $\theta$ (e.g., $H_0: \theta = \theta_0$)
+    \item \textbf{Alternative} $H_1$: the complement (e.g., $H_1: \theta \neq \theta_0$)
+    \item \textbf{Test statistic:} a function of the data that measures evidence against $H_0$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Decision rule:} reject $H_0$ if the test statistic falls in the \key{rejection region}.
+
+  \vspace{0.5em}
+  \begin{methodbox}
+    \textbf{General test statistic:}
+    \[ T = \frac{\hat{\theta} - \theta_0}{\text{SE}(\hat{\theta})} \]
+    Under $H_0$ and regularity conditions: $T \sim t_{n-k}$ (or $\approx N(0,1)$ for large $n$).
+  \end{methodbox}
+\end{frame}
+
+% --- Slide 38: Type I and Type II Errors ---
+\begin{frame}{Type I and Type II Errors}
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      & \textbf{$H_0$ true} & \textbf{$H_0$ false} \\
+      \midrule
+      \textbf{Reject $H_0$}      & \textcolor{negative}{Type I error ($\alpha$)}
+                                  & \textcolor{positive}{Correct (Power)} \\
+      \textbf{Fail to reject $H_0$} & \textcolor{positive}{Correct ($1-\alpha$)}
+                                  & \textcolor{negative}{Type II error ($\beta$)} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{1em}
+  \textbf{Key concepts:}
+  \begin{itemize}
+    \item \textbf{Size} ($\alpha$): probability of rejecting $H_0$ when it is true
+    \item \textbf{Power} ($1 - \beta$): probability of rejecting $H_0$ when it is false
+    \item Standard choices: $\alpha = 0.10, \; 0.05, \; 0.01$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Tradeoff:} decreasing $\alpha$ (fewer false positives) increases $\beta$ (more false negatives), holding sample size fixed.
+\end{frame}
+
+% --- Slide 39: The $t$-Test ---
+\begin{frame}{The $t$-Test}
+  \textbf{One-sample $t$-test:} testing $H_0: \mu = \mu_0$. Under Normality of $X_i$:
+  \begin{eqbox}
+    \[ t = \frac{\bar{X}_n - \mu_0}{S / \sqrt{n}} \sim t_{n-1} \quad \text{under } H_0 \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{Two-sided} ($H_1: \mu \neq \mu_0$): reject if $|t| > t_{n-1,\,\alpha/2}$.
+  \quad \textbf{One-sided} ($H_1: \mu > \mu_0$): reject if $t > t_{n-1,\,\alpha}$.
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    Exact under Normality; approximately valid for large $n$ by the CLT.
+    This is the workhorse test in regression analysis (Lecture~4).
+  \end{highlightbox}
+\end{frame}
+
+% --- Slide 40: $p$-Values ---
+\begin{frame}{$p$-Values}
+  \begin{definitionbox}[$p$-Value]
+    The \textbf{$p$-value} is the probability, under $H_0$, of observing a test statistic
+    at least as extreme as the one computed from the data:
+    \[ p = P(|T| \geq |t_{\text{obs}}| \mid H_0) \]
+  \end{definitionbox}
+
+  \vspace{0.5em}
+  \textbf{Decision rule:} reject $H_0$ at level $\alpha$ if $p < \alpha$.
+
+  \vspace{0.5em}
+  \textbf{Common misinterpretations} (\key{avoid these}):
+  \begin{itemize}
+    \item ``The $p$-value is the probability that $H_0$ is true'' \quad \textcolor{negative}{\textbf{Wrong}}
+    \item ``$p = 0.03$ means a $3\%$ chance the result is due to chance'' \quad \textcolor{negative}{\textbf{Wrong}}
+    \item ``$p > 0.05$ means $H_0$ is true'' \quad \textcolor{negative}{\textbf{Wrong}}
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{Correct:} the $p$-value measures the \emph{compatibility} of the data with $H_0$.
+\end{frame}
+
+% --- Slide 41: Connection to Econometrics ---
+\begin{frame}{From Statistics to Econometrics}
+  \textbf{Everything we reviewed today underpins regression analysis:}
+
+  \vspace{0.5em}
+  \begin{center}
+    \small
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{Statistical concept} & \textbf{Econometric application} \\
+      \midrule
+      Conditional expectation $\E[Y|X]$ & The regression function \\
+      Law of iterated expectations & Proving OLS unbiasedness \\
+      Variance decomposition & $R^2$ and model fit \\
+      Unbiasedness, efficiency & Gauss--Markov theorem \\
+      Consistency, LLN & Large-sample OLS properties \\
+      CLT & Asymptotic inference \\
+      $t$-test and $F$-test & Coefficient testing \\
+      Confidence intervals & Inference on $\beta$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{highlightbox}
+    Solid command of these foundations makes econometrics much more intuitive.
+  \end{highlightbox}
+\end{frame}
+
+% ==============================================================================
+% PART IV: PREVIEW & WRAP-UP
+% ==============================================================================
+
+% --- Slide 42: Preview of Lecture 2 ---
+\begin{frame}{Next Time: The Simple Regression Model}
+  In Lecture~2, we introduce the model:
+  \begin{eqbox}
+    \[ Y_i = \beta_0 + \beta_1 X_i + u_i \]
+  \end{eqbox}
+
+  \vspace{0.5em}
+  \textbf{What we will cover:}
+  \begin{itemize}
+    \item Derivation of the OLS estimator via minimizing $\sum_{i=1}^n (Y_i - \hat{Y}_i)^2$
+    \item Interpretation of $\beta_0$ and $\beta_1$
+    \item Assumptions for unbiasedness: $\E[u \mid X] = 0$
+    \item Properties: unbiasedness and the Gauss--Markov theorem
+    \item First R exercise: estimating the returns to education
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Reading:} \citet[Chapters 1--2]{Wooldridge2019_introductory}
+\end{frame}
+
+% --- Slide 43: Key Takeaways ---
+\begin{frame}{Key Takeaways}
+  \begin{keybox}
+    \begin{enumerate}
+      \item \textbf{Econometrics} = statistical methods for causal questions with observational data
+      \item The \textbf{conditional expectation} $\E[Y \mid X]$ is the regression function --- the best predictor of $Y$ given $X$
+      \item The \textbf{LIE} and \textbf{law of total variance} are workhorses for deriving estimator properties
+      \item \textbf{Estimators are random variables} --- inference is about their sampling distributions
+      \item The \textbf{LLN} justifies consistency; the \textbf{CLT} justifies asymptotic inference
+      \item \textbf{Confidence intervals} and \textbf{$p$-values} have precise interpretations --- beware of common mistakes
+    \end{enumerate}
+  \end{keybox}
+\end{frame}
+
+% --- Slide 44: References ---
+\begin{frame}[allowframebreaks]{References}
+  \bibliographystyle{apalike}
+  \bibliography{../Bibliography_base}
+\end{frame}
+
+\end{document}
